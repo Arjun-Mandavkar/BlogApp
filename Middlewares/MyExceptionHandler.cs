@@ -1,4 +1,5 @@
 ﻿using BlogApp.MappingServices;
+using BlogApp.MappingServices.Implementations;
 using BlogApp.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -15,7 +16,7 @@ namespace BloggingApplication.Services
     {
         private readonly RequestDelegate _next;
         private readonly string _path;
-        private ExceptionToResponseMapper _mapper = new ExceptionToResponseMapper();
+        private IExceptionResponseMapper _mapper = new ExceptionToResponseMapper();
 
         public MyExceptionHandler(RequestDelegate next, string path)
         {
@@ -46,9 +47,7 @@ namespace BloggingApplication.Services
                 }
                 else if (_path == "/ErrorDevEnv")
                 {
-                    ApiResponse apiResponse = _mapper.Map(exception);
-                    apiResponse.Data.Append(new Message { Code="StackTrace",Description=exception.ToString()});
-                    await httpContext.Response.WriteAsJsonAsync(apiResponse);
+                    await httpContext.Response.WriteAsJsonAsync(_mapper.MapDev(exception));
                     Console.WriteLine("_________Response returned from MyExceptionHandler. [Dev Env]");
                 }
                 else
