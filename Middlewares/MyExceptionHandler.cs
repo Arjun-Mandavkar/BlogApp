@@ -16,12 +16,12 @@ namespace BloggingApplication.Services
     {
         private readonly RequestDelegate _next;
         private readonly string _path;
-        private IExceptionResponseMapper _mapper = new ExceptionToResponseMapper();
-
-        public MyExceptionHandler(RequestDelegate next, string path)
+        private IExceptionResponseMapper _mapper;
+        public MyExceptionHandler(RequestDelegate next, string path, IExceptionResponseMapper mapper)
         {
             _next = next;
             _path = path;
+            _mapper = mapper;
         }
 
         public async Task InvokeAsync(HttpContext httpContext)
@@ -68,10 +68,10 @@ namespace BloggingApplication.Services
     // Extension method used to add the middleware to the HTTP request pipeline.
     public static class MyExceptionHandlerExtensions
     {
-        public static IApplicationBuilder UseMyExceptionHandler(this IApplicationBuilder builder, string path)
+        public static IApplicationBuilder UseMyExceptionHandler(this IApplicationBuilder builder, string path, IExceptionResponseMapper mapper)
         {
             Console.WriteLine("_________MyExceptionHandler middleware added to container.");
-            return builder.UseMiddleware<MyExceptionHandler>(path);
+            return builder.UseMiddleware<MyExceptionHandler>(path, mapper);
         }
     }
 }

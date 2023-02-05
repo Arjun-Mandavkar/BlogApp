@@ -1,3 +1,4 @@
+using BlogApp.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.Controllers

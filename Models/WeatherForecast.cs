@@ -1,4 +1,4 @@
-namespace BlogApp
+namespace BlogApp.Models
 {
     public class WeatherForecast
     {

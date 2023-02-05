@@ -1,4 +1,5 @@
 using BlogApp.MappingServices;
+using BlogApp.MappingServices.Implementations;
 using BloggingApplication.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -24,13 +25,13 @@ namespace BlogApp
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseMyExceptionHandler("/ErrorDevEnv");
+                app.UseMyExceptionHandler("/ErrorDevEnv", new ExceptionToResponseMapper());
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
             else
             {
-                app.UseMyExceptionHandler("/Error");
+                app.UseMyExceptionHandler("/Error", new ExceptionToResponseMapper());
             }
 
             app.UseHttpsRedirection();
