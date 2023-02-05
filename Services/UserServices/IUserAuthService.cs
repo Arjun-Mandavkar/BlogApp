@@ -6,5 +6,6 @@ namespace BlogApp.Services.UserServices
     {
         public Task<bool> IsUserExist(string email);
         public Task<bool> IsPasswordCorrect(ApplicationUser user, string password);
+        public Task<string> GenerateToken(ApplicationUser user);
     }
 }

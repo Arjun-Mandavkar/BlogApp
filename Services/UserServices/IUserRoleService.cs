@@ -5,6 +5,6 @@ namespace BlogApp.Services.UserServices
 {
     public interface IUserRoleService
     {
-        Task<ServiceResult> ChangeRole(int userId, UserRole role);
+        Task<ServiceResult> AssignRole(int userId, UserRole role);
     }
 }
