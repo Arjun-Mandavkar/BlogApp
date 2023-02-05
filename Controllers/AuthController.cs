@@ -3,6 +3,7 @@ using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
 using BlogApp.Services.MappingServices;
 using BlogApp.Services.UserServices;
+using BloggingApplication.Models.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,10 +20,10 @@ namespace BlogApp.Controllers
         private PasswordHasher<ApplicationUser> _hasher { get; }
         private IUserAuthService _userAuthService { get; }
         private IUserCrudService _userCrudService { get; }
-        private IUserMappings _userMappings { get; }
+        private IUserMapper _userMappings { get; }
         private IResponseMapper _responseMappings { get; }
 
-        public AuthController(IUserAuthService userAuthService, IUserCrudService userCrudService, IUserMappings userMappings)
+        public AuthController(IUserAuthService userAuthService, IUserCrudService userCrudService, IUserMapper userMappings)
         {
             _hasher = new PasswordHasher<ApplicationUser>();
             _userAuthService = userAuthService;
@@ -54,8 +55,7 @@ namespace BlogApp.Controllers
             }
 
             //Prepare dto object
-            UserInfoDto result = _userMappings.Map(user);
-            result.Token = await _userAuthService.GenerateToken(user);
+            AuthUserInfoDto result = await _userMappings.MapAuthUser(user);
 
             //Prepare response object and return
             return StatusCode(201, _responseMappings.Map(result));
@@ -76,8 +76,7 @@ namespace BlogApp.Controllers
                 return BadRequest(_responseMappings.Map(new Message { Code = "Error", Description = "Invalid Password." }));
 
             //Prepare dto and return response
-            UserInfoDto result = _userMappings.Map(user);
-            result.Token = await _userAuthService.GenerateToken(user);
+            AuthUserInfoDto result = await _userMappings.MapAuthUser(user);
 
             return Ok(_responseMappings.Map(result));
         }

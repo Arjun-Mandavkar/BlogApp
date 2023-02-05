@@ -27,7 +27,10 @@ namespace BlogApp.Repositories.Implementations
                 await connection.OpenAsync(cancellationToken);
                 user.Id = await connection.ExecuteScalarAsync<int>(query1, user);
             }
-            return IdentityResult.Success;
+            if (user.Id > 0)
+                return IdentityResult.Success;
+            else
+                return IdentityResult.Failed(new IdentityError { Code = "Error", Description = "Creation of user failed." });
         }
 
         public async Task<IdentityResult> DeleteAsync(ApplicationUser user, CancellationToken cancellationToken)
@@ -45,7 +48,7 @@ namespace BlogApp.Repositories.Implementations
             if (rowsAffected == 1)
                 return IdentityResult.Success;
             else
-                return IdentityResult.Failed();
+                return IdentityResult.Failed(new IdentityError { Code = "Error", Description = "Deletion of user failed." });
         }
 
         public void Dispose()
@@ -105,9 +108,26 @@ namespace BlogApp.Repositories.Implementations
             throw new NotImplementedException();
         }
 
-        public Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken)
+        public async Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            string query1 = $@"UPDATE [Users] SET
+                               [Email] = @{nameof(ApplicationUser.Email)},
+                               [Name] = @{nameof(ApplicationUser.Name)},
+                               [PasswordHash] = @{nameof(ApplicationUser.PasswordHash)};
+                               WHERE [Id] = @{nameof(ApplicationUser.Id)}";
+
+            int ? rowsAffected = null;
+            using (var connection = _connectionFactory.GetDefaultConnection())
+            {
+                await connection.OpenAsync(cancellationToken);
+                rowsAffected = await connection.ExecuteAsync(query1, user);
+            }
+
+            if (rowsAffected == 1)
+                return IdentityResult.Success;
+            else
+                return IdentityResult.Failed(new IdentityError { Code = "Error", Description = "Updation of user failed."});
         }
     }
 }
