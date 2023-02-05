@@ -1,4 +1,4 @@
-﻿namespace BlogApp.Models
+﻿namespace BlogApp.Models.Response
 {
     /// <summary>
     /// Marker interface for ApiResponse data

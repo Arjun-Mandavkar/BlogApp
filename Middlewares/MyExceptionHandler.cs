@@ -9,7 +9,7 @@ using System.Net;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace BloggingApplication.Services
+namespace BlogApp.Services
 {
     // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
     public class MyExceptionHandler

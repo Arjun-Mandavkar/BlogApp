@@ -1,4 +1,4 @@
-﻿using BlogApp.Models;
+﻿using BlogApp.Models.Response;
 
 namespace BlogApp.MappingServices
 {

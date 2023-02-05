@@ -1,6 +1,6 @@
 using BlogApp.MappingServices;
 using BlogApp.MappingServices.Implementations;
-using BloggingApplication.Services;
+using BlogApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
