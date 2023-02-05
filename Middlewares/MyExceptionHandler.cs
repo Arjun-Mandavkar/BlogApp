@@ -1,6 +1,6 @@
-﻿using BlogApp.MappingServices;
-using BlogApp.MappingServices.Implementations;
+﻿using BlogApp.MappingServices.Implementations;
 using BlogApp.Models;
+using BlogApp.Services.MappingServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;

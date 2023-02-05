@@ -1,4 +1,4 @@
-﻿namespace BlogApp.MappingServices
+﻿namespace BlogApp.Services.MappingServices
 {
     public interface IMapper<TSource, TTarget>
     {

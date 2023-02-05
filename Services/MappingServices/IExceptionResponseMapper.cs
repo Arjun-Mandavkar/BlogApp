@@ -1,6 +1,6 @@
 ﻿using BlogApp.Models.Response;
 
-namespace BlogApp.MappingServices
+namespace BlogApp.Services.MappingServices
 {
     public interface IExceptionResponseMapper : IMapper<Exception, ApiResponse>
     {
