@@ -44,7 +44,12 @@ namespace BlogApp.Services.UserServices.Implementations
         public async Task<ServiceResult> UpdateUser(ApplicationUser detachedUser)
         {
             IdentityResult result = await _userStore.UpdateAsync(detachedUser, CancellationToken.None);
-            return _identityServiceMapper.Map(result);
+            ServiceResult res = _identityServiceMapper.Map(result);
+            if (result.Succeeded)
+            {
+                res.Messages.Append(new Message { Code = "Message", Description = "User updates successfully." });
+            }
+            return res;
         }
     }
 }

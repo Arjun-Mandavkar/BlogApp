@@ -9,7 +9,7 @@ namespace BlogApp.Services.MappingServices.Implementations
         {
             if(result.Succeeded)
             {
-                return ServiceResult.Success;
+                return ServiceResult.Success();
             }
             else
             {
