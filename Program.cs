@@ -8,9 +8,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using BlogApp.Models;
 using BlogApp.Services.UserServices;
-using BlogApp.Services.UserServices.Implementation;
+using BlogApp.Services.UserServices.Implementations;
 using BlogApp.Repositories.Implementations;
 using BlogApp.Repositories;
+using BlogApp.Validations;
+using BlogApp.Validations.Implementations;
 
 namespace BlogApp
 {
@@ -51,6 +53,8 @@ namespace BlogApp
             builder.Services.AddScoped<IUserCrudService, UserCrudService>();
             builder.Services.AddScoped<IUserAuthService, UserAuthService>();
             builder.Services.AddScoped<IUserRoleService, UserRoleService>();
+
+            builder.Services.AddScoped<IUserValidation, UserValidation>();
 
             builder.Services.AddTransient<IUserStore<ApplicationUser>, UserStoreImpl>();
             builder.Services.AddTransient<IBlogStore<Blog>, BlogStoreImpl>();

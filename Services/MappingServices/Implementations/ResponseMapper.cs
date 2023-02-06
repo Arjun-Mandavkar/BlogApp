@@ -70,5 +70,11 @@ namespace BlogApp.Services.MappingServices.Implementations
             IsSuccess = true,
             Data = messages
         };
+
+        public ApiResponse Map(ServiceResult result) => new ApiResponse
+        {
+            IsSuccess = result.Succeeded,
+            Data = result.Messages
+        };
     }
 }

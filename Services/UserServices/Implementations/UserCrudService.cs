@@ -4,7 +4,7 @@ using BlogApp.Models.Response;
 using BlogApp.Services.MappingServices;
 using Microsoft.AspNetCore.Identity;
 
-namespace BlogApp.Services.UserServices.Implementation
+namespace BlogApp.Services.UserServices.Implementations
 {
     public class UserCrudService : IUserCrudService
     {

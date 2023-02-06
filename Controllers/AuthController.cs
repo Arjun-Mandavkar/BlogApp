@@ -3,6 +3,7 @@ using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
 using BlogApp.Services.MappingServices;
 using BlogApp.Services.UserServices;
+using BlogApp.Validations;
 using BloggingApplication.Models.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -16,17 +17,14 @@ namespace BlogApp.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-
-        private PasswordHasher<ApplicationUser> _hasher { get; }
-        private IUserAuthService _userAuthService { get; }
+        private IUserValidation _userValidation { get; }
         private IUserCrudService _userCrudService { get; }
         private IUserMapper _userMappings { get; }
         private IResponseMapper _responseMappings { get; }
 
-        public AuthController(IUserAuthService userAuthService, IUserCrudService userCrudService, IUserMapper userMappings)
+        public AuthController(IUserValidation userValidation, IUserCrudService userCrudService, IUserMapper userMappings)
         {
-            _hasher = new PasswordHasher<ApplicationUser>();
-            _userAuthService = userAuthService;
+            _userValidation = userValidation;
             _userCrudService = userCrudService;
             _userMappings = userMappings;
         }
@@ -72,7 +70,7 @@ namespace BlogApp.Controllers
                 return BadRequest(_responseMappings.Map(new Message { Code = "Error", Description = "Invalid Email. Try registring first." }));
 
             //Verify password
-            if (! await _userAuthService.IsPasswordCorrect(user, dto.Password))
+            if (! await _userValidation.ValidatePassword(user, dto.Password))
                 return BadRequest(_responseMappings.Map(new Message { Code = "Error", Description = "Invalid Password." }));
 
             //Prepare dto and return response

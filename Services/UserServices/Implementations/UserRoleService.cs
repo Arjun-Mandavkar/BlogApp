@@ -2,7 +2,7 @@
 using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
 
-namespace BlogApp.Services.UserServices.Implementation
+namespace BlogApp.Services.UserServices.Implementations
 {
     public class UserRoleService : IUserRoleService
     {

@@ -6,37 +6,15 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace BlogApp.Services.UserServices.Implementation
+namespace BlogApp.Services.UserServices.Implementations
 {
     public class UserAuthService : IUserAuthService
     {
         private readonly IConfiguration _configuration;
-        private PasswordHasher<ApplicationUser> _hasher;
-        private IUserCrudService _userCrudService;
 
-        public UserAuthService(IConfiguration configuration, PasswordHasher<ApplicationUser> hasher)
+        public UserAuthService(IConfiguration configuration)
         {
             _configuration = configuration;
-            _hasher = hasher;
-        }
-
-        public async Task<bool> IsUserExist(string email)
-        {
-            ApplicationUser user = await _userCrudService.FindByEmail(email);
-            if (user == null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        public async Task<bool> IsPasswordCorrect(ApplicationUser user, string password)
-        {
-            var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, password);
-            return result == PasswordVerificationResult.Success;
         }
 
         public async Task<string> GenerateToken(ApplicationUser user)

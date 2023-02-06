@@ -1,9 +1,4 @@
-﻿using BlogApp.MappingServices.Implementations;
-using BlogApp.Models;
-using BlogApp.Services.MappingServices;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
+﻿using BlogApp.Services.MappingServices;
 using Microsoft.Data.SqlClient;
 using System.Net;
 using System.Text.Json.Serialization;
