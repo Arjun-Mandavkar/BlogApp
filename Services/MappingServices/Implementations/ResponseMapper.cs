@@ -36,36 +36,19 @@ namespace BlogApp.Services.MappingServices.Implementations
             Data = new List<Message> { message }
         };
 
-        /// <summary>
-        /// Used for returning Success or Information message
-        /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         public ApiResponse MapMessage(Message message) => new ApiResponse
         {
             IsSuccess = true,
             Data = new List<Message> { message }
         };
 
-        /// <summary>
-        /// Used only for returning 'ERROR' messages
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns>Information about failure</returns>
-        public ApiResponse Map(IEnumerable<Message> messages) => new ApiResponse
+        public ApiResponse Map(params Message[] messages) => new ApiResponse
         {
             IsSuccess = false,
             Data =  messages
         };
 
-        /// <summary>
-        /// Used for returning Success or Information messages
-        /// </summary>
-        /// <param name="messages"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public ApiResponse MapMessages(IEnumerable<Message> messages) => new ApiResponse
+        public ApiResponse MapMessages(params Message[] messages) => new ApiResponse
         {
             IsSuccess = true,
             Data = messages

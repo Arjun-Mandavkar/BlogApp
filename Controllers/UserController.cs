@@ -6,10 +6,7 @@ using BlogApp.Services.MappingServices;
 using BlogApp.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using System.Transactions;
 
 namespace BlogApp.Controllers
@@ -20,9 +17,10 @@ namespace BlogApp.Controllers
     public class UserController : ControllerBase
     {
         private IUserCrudService _userCrudService { get; }
-        private IUserMapper _userMapper { get; }
-        private IBlogOwnerService _blogOwner { get; }
+        private IBlogOwnerService _blogOwnerService { get; }
         private IBlogCommentService _blogCommentService { get; }
+        private IUserMapper _userMapper { get; }
+        private IResponseMapper _responseMapper { get; }
 
         public UserController(IUserCrudService userCrudService, IUserMapper userMapper)
         {
@@ -32,10 +30,19 @@ namespace BlogApp.Controllers
 
         [HttpGet]
         [Route("{userId}")]
-        public async Task<ActionResult<UserInfoDto>> GetById(string userId)
+        public async Task<ActionResult<ApiResponse>> GetById(string userId)
         {
             ApplicationUser user = await _userCrudService.FindById(userId);
-            return Ok(_userMapper.Map(user));
+            if (user == null)
+            {
+                UserInfoDto userDto = _userMapper.Map(user);
+                return Ok(_responseMapper.Map(userDto));
+            }
+            else
+            {
+                return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "Invalid user id." }));
+            }
+            
         }
 
         [HttpGet]
@@ -43,7 +50,16 @@ namespace BlogApp.Controllers
         public async Task<ActionResult<UserInfoDto>> GetByEmail(string email)
         {
             ApplicationUser user = await _userCrudService.FindByEmail(email);
-            return Ok(_userMapper.Map(user));
+            if (user == null)
+            {
+                UserInfoDto userDto = _userMapper.Map(user);
+                return Ok(_responseMapper.Map(userDto));
+            }
+            else
+            {
+                return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "Invalid email address." }));
+            }
+
         }
 
         [HttpPost]
@@ -54,18 +70,20 @@ namespace BlogApp.Controllers
 
             //Chech user exists or not
             if (user != null)
-                return BadRequest("Email already taken.");
+                return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "Email already taken." }));
 
             using (var tr = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 //Create user
                 user = await _userCrudService.CreateUser(dto);
                 if (user == null)
-                    return BadRequest("User creation failed.");
+                    return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "User creation failed." }));
 
                 tr.Complete();
             }
-            return StatusCode(201, _userMapper.Map(user)); 
+
+            UserInfoDto userDto = _userMapper.Map(user);
+            return StatusCode(201, _responseMapper.Map(userDto)); 
         }
 
         [HttpDelete]
@@ -76,26 +94,30 @@ namespace BlogApp.Controllers
 
             //Chech user exists or not
             if (user == null)
-                return BadRequest("User not found.");
+                return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "User not found." }));
 
             using (var tr = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 //Delete the user
                 ServiceResult res = await _userCrudService.DeleteUser(user);
                 if (! res.Succeeded)
-                    return BadRequest("Invalid user id.");
+                    return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "Invalid user id." }));
 
                 //set isOwnerExists false in owners table
-                if (!await _blogOwner.UpdateOwnerEntryForUserDeletion(user))
-                    return StatusCode(500, "Failed to update owner table.");
+                if (!await _blogOwnerService.UpdateOwnerEntryForUserDeletion(user))
+                    return StatusCode(200, _responseMapper.Map(new Message { Code = "Error", Description = "Failed to update owner table." },
+                                                               new Message { Code = "Message", Description = "User deleted successfully." }));
 
                 //Set isUserExists false in comments table
                 if (! await _blogCommentService.UpdateCommentForUserDeletion(user))
-                    return StatusCode(500, "Failed to update comment table.");
+                    return StatusCode(200, _responseMapper.Map(new Message { Code = "Error", Description = "Failed to update comment table." },
+                                                               new Message { Code = "Message", Description = "User deleted successfully." }));
 
                 tr.Complete();
             }
-            return Ok(_userMapper.Map(user));
+
+            UserInfoDto userDto = _userMapper.Map(user);
+            return Ok(_responseMapper.Map(userDto));
         }
     }
 }
