@@ -18,8 +18,8 @@ namespace BlogApp.Repositories.Implementations
         {
             cancellationToken.ThrowIfCancellationRequested();
             string query1 = $@"INSERT INTO [Users]
-                               ([Email], [Name], [PasswordHash])
-                               VALUES (@{nameof(ApplicationUser.Email)},@{nameof(ApplicationUser.Name)},@{nameof(ApplicationUser.PasswordHash)});
+                               ([Email], [Name], [PasswordHash], [RoleId])
+                               VALUES (@{nameof(ApplicationUser.Email)},@{nameof(ApplicationUser.Name)},@{nameof(ApplicationUser.PasswordHash)},@{nameof(ApplicationUser.Role)});
                                SELECT CAST(SCOPE_IDENTITY() as int)";
 
             using (var connection = _connectionFactory.GetDefaultConnection())

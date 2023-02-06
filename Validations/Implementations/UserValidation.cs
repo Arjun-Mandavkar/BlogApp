@@ -8,9 +8,10 @@ namespace BlogApp.Validations.Implementations
     {
         private IUserCrudService _userCrudService;
         private PasswordHasher<ApplicationUser> _hasher;
-        public UserValidation(IUserCrudService userCrudService)
+        public UserValidation(IUserCrudService userCrudService, PasswordHasher<ApplicationUser> hasher)
         {
             _userCrudService = userCrudService;
+            _hasher = hasher;
         }
 
         public async Task<bool> ValidateEmail(string email)
