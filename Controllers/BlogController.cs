@@ -141,9 +141,10 @@ namespace BloggingApplication.Controllers
         [HttpGet("Authors/{blogId}")]
         public async Task<ActionResult<ApiResponse>> GetAuthors(int blogId)
         {
+            Blog blog = await _blogCrudService.Get(blogId);
             BlogAuthorsDto result = new BlogAuthorsDto();
-            result.Editors = await _blogEditorService.GetAll(blogId);
-            result.Owners = await _blogOwnerService.GetAll(blogId);
+            result.Editors = await _blogEditorService.GetAll(blog);
+            result.Owners = await _blogOwnerService.GetAll(blog);
 
             return _responseMapper.Map(result);
         }
