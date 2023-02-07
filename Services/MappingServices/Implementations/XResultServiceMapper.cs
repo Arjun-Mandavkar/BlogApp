@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BlogApp.Services.MappingServices.Implementations
 {
-    public class IdentityServiceMapper : IIdentityServiceMapper
+    public class XResultServiceMapper : IXResultServiceMapper
     {
         public ServiceResult Map(IdentityResult result)
         {
@@ -20,6 +20,13 @@ namespace BlogApp.Services.MappingServices.Implementations
                 }
                 return ServiceResult.Failed(messages.ToArray());
             }
+        }
+
+        public ServiceResult Map(ValidationResult result)
+        {
+            return result.Succeeded == true ?
+                ServiceResult.Success() : 
+                ServiceResult.Failed(result.Messages.ToArray());
         }
     }
 }

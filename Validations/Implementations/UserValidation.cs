@@ -1,4 +1,5 @@
 ﻿using BlogApp.Models;
+using BlogApp.Models.Dtos;
 using BlogApp.Services.UserServices;
 using Microsoft.AspNetCore.Identity;
 
@@ -12,6 +13,11 @@ namespace BlogApp.Validations.Implementations
         {
             _userCrudService = userCrudService;
             _hasher = hasher;
+        }
+
+        public async Task<bool> ValidateAdminUser(ApplicationUser user)
+        {
+            return user.Role.Equals(RoleEnum.ADMIN);
         }
 
         public async Task<bool> ValidateEmail(string email)

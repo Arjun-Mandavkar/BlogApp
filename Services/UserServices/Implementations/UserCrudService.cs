@@ -10,12 +10,12 @@ namespace BlogApp.Services.UserServices.Implementations
     {
         private IUserStore<ApplicationUser> _userStore;
         private IUserMapper _userMapper;
-        private IIdentityServiceMapper _identityServiceMapper;
-        public UserCrudService(IUserStore<ApplicationUser> userStore, IUserMapper userMapper, IIdentityServiceMapper identityServiceMapper)
+        private IXResultServiceMapper _resultMapper;
+        public UserCrudService(IUserStore<ApplicationUser> userStore, IUserMapper userMapper, IXResultServiceMapper identityServiceMapper)
         {
             _userStore = userStore;
             _userMapper = userMapper;
-            _identityServiceMapper = identityServiceMapper;
+            _resultMapper = identityServiceMapper;
         }
         public async Task<ApplicationUser> CreateUser(RegisterUserDto dto)
         {
@@ -28,7 +28,7 @@ namespace BlogApp.Services.UserServices.Implementations
         public async Task<ServiceResult> DeleteUser(ApplicationUser user)
         {
             IdentityResult res = await _userStore.DeleteAsync(user, CancellationToken.None);
-            return _identityServiceMapper.Map(res);
+            return _resultMapper.Map(res);
         }
 
         public async Task<ApplicationUser> FindByEmail(string email)
@@ -44,7 +44,7 @@ namespace BlogApp.Services.UserServices.Implementations
         public async Task<ServiceResult> UpdateUser(ApplicationUser detachedUser)
         {
             IdentityResult result = await _userStore.UpdateAsync(detachedUser, CancellationToken.None);
-            ServiceResult res = _identityServiceMapper.Map(result);
+            ServiceResult res = _resultMapper.Map(result);
             if (result.Succeeded)
             {
                 res.Messages.Append(new Message { Code = "Message", Description = "User updates successfully." });

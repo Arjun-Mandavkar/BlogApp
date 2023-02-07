@@ -11,10 +11,14 @@ namespace BlogApp.Services.UserServices.Implementations
     public class UserAuthService : IUserAuthService
     {
         private readonly IConfiguration _configuration;
+        private IHttpContextAccessor _httpContextAccessor;
+        private IUserCrudService _userCrudService;
 
-        public UserAuthService(IConfiguration configuration)
+        public UserAuthService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IUserCrudService userCrudService)
         {
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
+            _userCrudService = userCrudService;
         }
 
         public async Task<string> GenerateToken(ApplicationUser user)
@@ -49,6 +53,15 @@ namespace BlogApp.Services.UserServices.Implementations
 
             //Generate string of token
             return new JwtSecurityTokenHandler().WriteToken(jwtToken);
+        }
+
+        public async Task<ApplicationUser> GetLoggedInUser()
+        {
+            string userId = _httpContextAccessor.HttpContext.User.Claims
+                            .FirstOrDefault(c => c.Type == "Id").Value;
+
+            ApplicationUser user = await _userCrudService.FindById(userId.ToString());
+            return user;
         }
     }
 }
