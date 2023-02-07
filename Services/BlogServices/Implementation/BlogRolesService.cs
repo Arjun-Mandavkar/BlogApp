@@ -9,11 +9,17 @@ namespace BlogApp.Services.BlogServices.Implementation
     {
         private IBlogCrudService _blogCrudService;
         private IUserCrudService _userCrudService;
+        private IBlogEditorService _blogEditorService;
+        private IBlogOwnerService _blogOwnerService;
         public BlogRolesService(IBlogCrudService blogCrudService,
-                                IUserCrudService userCrudService)
+                                IUserCrudService userCrudService,
+                                IBlogEditorService blogEditorService,
+                                IBlogOwnerService blogOwnerService)
         {
             _blogCrudService = blogCrudService;
             _userCrudService = userCrudService;
+            _blogEditorService = blogEditorService;
+            _blogOwnerService = blogOwnerService;
         }
 
         public async Task<ServiceResult> AssignRoles(BlogRoleDto dto)
@@ -25,7 +31,13 @@ namespace BlogApp.Services.BlogServices.Implementation
             ApplicationUser user = await _userCrudService.FindById(dto.UserId.ToString());
             if (user == null)
                 return ServiceResult.Failed(new Message { Code = "Error", Description = "User not found." });
-            throw new NotImplementedException();
+
+            if (dto.Roles.Contains(BlogRoleEnum.OWNER))
+                return await _blogOwnerService.Assign(blog, user);
+            else if (dto.Roles.Contains(BlogRoleEnum.EDITOR))           //This else is requirement
+                return await _blogEditorService.Assign(blog, user);
+
+            return ServiceResult.Success(new Message { Code = "Message", Description = "Roles assigned successfully."});
         }
 
         public async Task<ServiceResult> RevokeRoles(BlogRoleDto dto)
@@ -37,7 +49,13 @@ namespace BlogApp.Services.BlogServices.Implementation
             ApplicationUser user = await _userCrudService.FindById(dto.UserId.ToString());
             if (user == null)
                 return ServiceResult.Failed(new Message { Code = "Error", Description = "User not found." });
-            throw new NotImplementedException();
+
+            if (dto.Roles.Contains(BlogRoleEnum.OWNER))
+                return await _blogOwnerService.Revoke(blog, user);
+            if (dto.Roles.Contains(BlogRoleEnum.EDITOR))
+                return await _blogEditorService.Revoke(blog, user);
+
+            return ServiceResult.Success(new Message { Code = "Message", Description = "Roles revoked successfully." });
         }
     }
 }
