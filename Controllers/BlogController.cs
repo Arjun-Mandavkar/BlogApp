@@ -5,7 +5,6 @@ using BlogApp.Services.BlogServices;
 using BlogApp.Services.MappingServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Boolean = BlogApp.Models.Response.Boolean;
 
@@ -18,33 +17,31 @@ namespace BloggingApplication.Controllers
     {
         private IBlogCrudService _blogCrudService;
         private IBlogMapper _blogMapper;
-        private IXResultServiceMapper _resultMapper;
         private IResponseMapper _responseMapper;
         private IBlogLikeService _blogLikeService;
         private IBlogCommentService _blogCommentService;
         private IBlogOwnerService _blogOwnerService;
         private IBlogEditorService _blogEditorService;
-        private IBlogRoleService _blogRoleService;
+        private IBlogRolesService _blogRolesService;
         public BlogController(IBlogCrudService blogCrudService,
                               IBlogMapper blogMapper,
-                              IXResultServiceMapper resultMapper,
                               IResponseMapper responseMapper,
                               IBlogLikeService blogLikeService,
                               IBlogCommentService blogCommentService,
                               IBlogOwnerService blogOwnerService,
                               IBlogEditorService blogEditorService,
-                              IBlogRoleService blogRoleService)
+                              IBlogRolesService blogRolesService)
         {
             _blogCrudService = blogCrudService;
             _blogMapper = blogMapper;
-            _resultMapper = resultMapper;
             _responseMapper = responseMapper;
             _blogLikeService = blogLikeService;
             _blogCommentService = blogCommentService;
             _blogOwnerService = blogOwnerService;
             _blogEditorService = blogEditorService;
-            _blogRoleService = blogRoleService;
+            _blogRolesService = blogRolesService;
         }
+
         /*--------------------- CRUD --------------------*/
         [HttpGet]
         public async Task<IEnumerable<BlogDto>> GetAll()
@@ -150,8 +147,8 @@ namespace BloggingApplication.Controllers
         public async Task<ActionResult<ApiResponse>> GetAuthors(int blogId)
         {
             BlogAuthorsDto result = new BlogAuthorsDto();
-            result.Editors = await _blogEditorService.GetEditors(blogId);
-            result.Owners = await _blogOwnerService.GetOwners(blogId);
+            result.Editors = await _blogEditorService.GetAll(blogId);
+            result.Owners = await _blogOwnerService.GetAll(blogId);
 
             return _responseMapper.Map(result);
         }
@@ -159,14 +156,14 @@ namespace BloggingApplication.Controllers
         [HttpPost("AssignRoles")]
         public async Task<ActionResult<ApiResponse>> AssignRoles(BlogRoleDto dto)
         {
-            ServiceResult result = await _blogRoleService.AssignRoles(dto);
+            ServiceResult result = await _blogRolesService.AssignRoles(dto);
             return _responseMapper.Map(result);
         }
 
         [HttpPost("RevokeRoles")]
         public async Task<ActionResult<ApiResponse>> RevokeRoles(BlogRoleDto dto)
         {
-            ServiceResult result = await _blogRoleService.RevokeRoles(dto);
+            ServiceResult result = await _blogRolesService.RevokeRoles(dto);
             return _responseMapper.Map(result);
         }
     }
