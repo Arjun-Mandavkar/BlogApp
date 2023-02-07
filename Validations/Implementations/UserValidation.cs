@@ -7,11 +7,11 @@ namespace BlogApp.Validations.Implementations
 {
     public class UserValidation : IUserValidation
     {
-        private IUserCrudService _userCrudService;
+        private IUserStore<ApplicationUser> _userStore;
         private PasswordHasher<ApplicationUser> _hasher;
-        public UserValidation(IUserCrudService userCrudService, PasswordHasher<ApplicationUser> hasher)
+        public UserValidation(IUserStore<ApplicationUser> userStore, PasswordHasher<ApplicationUser> hasher)
         {
-            _userCrudService = userCrudService;
+            _userStore = userStore;
             _hasher = hasher;
         }
 
@@ -22,7 +22,7 @@ namespace BlogApp.Validations.Implementations
 
         public async Task<bool> ValidateEmail(string email)
         {
-            ApplicationUser user = await _userCrudService.FindByEmail(email);
+            ApplicationUser user = await _userStore.FindByNameAsync(email, CancellationToken.None);
             return user != null;
         }
 

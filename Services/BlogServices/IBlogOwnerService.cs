@@ -4,7 +4,7 @@ using BlogApp.Models.Response;
 
 namespace BlogApp.Services.BlogServices
 {
-    public interface IBlogOwnerService : IBlogRoleService
+    public interface IBlogOwnerStore : IBlogRoleService
     {
         public Task<bool> UpdateOwnerEntryForUserDeletion(int userId);
     }

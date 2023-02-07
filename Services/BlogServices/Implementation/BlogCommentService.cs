@@ -47,8 +47,10 @@ namespace BlogApp.Services.BlogServices.Implementation
             if(!res.Succeeded)
                 return _resultMapper.Map(res);
 
+            ApplicationUser loggedInUser = await _userAuthService.GetLoggedInUser();
+
             //Create entity of BlogComment
-            BlogComment commentEntity = _blogMapper.Map(comment);
+            BlogComment commentEntity = _blogMapper.Map(comment, loggedInUser);
 
             BlogComment detachedComment = await _blogCommentStore.CreateAsync(commentEntity);
             if (detachedComment == null)

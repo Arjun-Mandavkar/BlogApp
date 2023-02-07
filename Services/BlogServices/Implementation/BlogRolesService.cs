@@ -10,11 +10,11 @@ namespace BlogApp.Services.BlogServices.Implementation
         private IBlogCrudService _blogCrudService;
         private IUserCrudService _userCrudService;
         private IBlogEditorService _blogEditorService;
-        private IBlogOwnerService _blogOwnerService;
+        private IBlogOwnerStore _blogOwnerService;
         public BlogRolesService(IBlogCrudService blogCrudService,
                                 IUserCrudService userCrudService,
                                 IBlogEditorService blogEditorService,
-                                IBlogOwnerService blogOwnerService)
+                                IBlogOwnerStore blogOwnerService)
         {
             _blogCrudService = blogCrudService;
             _userCrudService = userCrudService;

@@ -11,6 +11,6 @@ namespace BlogApp.Models
         [Required]
         public string OwnerName { get; set; } = string.Empty;
         [Required]
-        public bool IsOwnerExists { get; set; }
+        public bool IsOwnerExists { get; set; } = true;
     }
 }

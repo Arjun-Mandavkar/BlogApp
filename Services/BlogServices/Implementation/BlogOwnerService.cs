@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BlogApp.Services.BlogServices.Implementation
 {
-    public class BlogOwnerService : IBlogOwnerService
+    public class BlogOwnerService : IBlogOwnerStore
     {
         private IBlogOwnersStore<BlogOwner> _blogOwnerStore;
         private IUserCrudService _userCrudService;

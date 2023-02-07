@@ -6,8 +6,8 @@ namespace BlogApp.Services.MappingServices
     public interface IBlogMapper : IMapper<BlogDto, Blog>,
                                    IMapper<Blog, BlogDto>,
                                    IMapper<BlogComment, BlogCommentDto>,
-                                   IMapper<BlogCommentDto, BlogComment>,
                                    IMapper<BlogUserObject, BlogOwner>
     {
+        public BlogComment Map(BlogCommentDto dto, ApplicationUser user);
     }
 }

@@ -17,7 +17,7 @@ namespace BlogApp.Controllers
     public class UserController : ControllerBase
     {
         private IUserCrudService _userCrudService { get; }
-        private IBlogOwnerService _blogOwnerService { get; }
+        private IBlogOwnerStore _blogOwnerService { get; }
         private IBlogCommentService _blogCommentService { get; }
         private IUserMapper _userMapper { get; }
         private IResponseMapper _responseMapper { get; }

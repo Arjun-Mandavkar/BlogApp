@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace BlogApp.Models
 {
-    public class BlogComment : ResponseModel
+    public class BlogComment
     {
         [Key]        
         public int Id { get; set; }

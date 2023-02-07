@@ -20,7 +20,7 @@ namespace BloggingApplication.Controllers
         private IResponseMapper _responseMapper;
         private IBlogLikeService _blogLikeService;
         private IBlogCommentService _blogCommentService;
-        private IBlogOwnerService _blogOwnerService;
+        private IBlogOwnerStore _blogOwnerService;
         private IBlogEditorService _blogEditorService;
         private IBlogRolesService _blogRolesService;
         public BlogController(IBlogCrudService blogCrudService,
@@ -28,7 +28,7 @@ namespace BloggingApplication.Controllers
                               IResponseMapper responseMapper,
                               IBlogLikeService blogLikeService,
                               IBlogCommentService blogCommentService,
-                              IBlogOwnerService blogOwnerService,
+                              IBlogOwnerStore blogOwnerService,
                               IBlogEditorService blogEditorService,
                               IBlogRolesService blogRolesService)
         {
