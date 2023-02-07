@@ -116,9 +116,9 @@ namespace BloggingApplication.Controllers
         }
 
         [HttpDelete("Comment/Delete")]
-        public async Task<ActionResult<ApiResponse>> DeleteComment(BlogCommentDto dto)
+        public async Task<ActionResult<ApiResponse>> DeleteComment(int commentId)
         {
-            ServiceResult result = await _blogCommentService.DeleteComment(dto);
+            ServiceResult result = await _blogCommentService.DeleteComment(commentId);
             return _responseMapper.Map(result);
         }
 
@@ -132,13 +132,8 @@ namespace BloggingApplication.Controllers
         [HttpGet("Comment/{blogId}")]
         public async Task<ActionResult<ApiResponse>> GetAllCommentsOfBlog(int blogId)
         {
-            IEnumerable<BlogComment> comments = await _blogCommentService.GetAllCommentsOfBlog(blogId);
-
-            IEnumerable <BlogCommentDto> commentsdto = new List<BlogCommentDto>();
-            foreach (var comment in comments)
-                commentsdto.Append(_blogMapper.Map(comment));
-
-            return _responseMapper.Map(commentsdto);
+            IEnumerable<BlogCommentDto> comments = await _blogCommentService.GetAllCommentsOfBlog(blogId);
+            return _responseMapper.Map(comments);
         }
 
         /*---------------------- Assign Role ----------------------*/

@@ -28,14 +28,14 @@ namespace BlogApp.Repositories.Implementations
         public async Task<bool> IsEditor(Blog blog, ApplicationUser user)
         {
             string query = $@"SELECT [BlogId],[UserId] FROM [BlogEditors]
-                              WHERE UserId = @{nameof(BlogEditor.UserId)} 
-                              AND BlogId = @{nameof(BlogEditor.BlogId)}";
-            BlogEditor entity = new BlogEditor { BlogId = blog.Id,UserId=user.Id };
-            BlogEditor entry = null;
+                              WHERE UserId = @{nameof(BlogUser.UserId)} 
+                              AND BlogId = @{nameof(BlogUser.BlogId)}";
+            BlogUser entity = new BlogUser { BlogId = blog.Id,UserId=user.Id };
+            BlogUser entry = null;
             using (var connection = _connectionFactory.GetDefaultConnection())
             {
                 await connection.OpenAsync();
-                entry = await connection.QuerySingleOrDefaultAsync<BlogEditor>(query, entity);
+                entry = await connection.QuerySingleOrDefaultAsync<BlogUser>(query, entity);
             }
             return (entry == null) ? false : true;
         }
@@ -47,9 +47,9 @@ namespace BlogApp.Repositories.Implementations
 
             string query = $@"INSERT INTO [BlogEditors]
                               ([UserId],[BlogId])
-                              VALUES(@{nameof(BlogEditor.UserId)},@{nameof(BlogEditor.BlogId)})";
+                              VALUES(@{nameof(BlogUser.UserId)},@{nameof(BlogUser.BlogId)})";
             
-            BlogEditor entity = new BlogEditor { BlogId = blog.Id, UserId = user.Id };
+            BlogUser entity = new BlogUser { BlogId = blog.Id, UserId = user.Id };
 
             int? rowsAffected = null;
             using (var connection = _connectionFactory.GetDefaultConnection())
@@ -69,10 +69,10 @@ namespace BlogApp.Repositories.Implementations
                 throw new InvalidOperationException("User does not have editor role.");
 
             string query = $@"DELETE FROM [BlogEditors]
-                              WHERE UserId = @{nameof(BlogEditor.UserId)} 
-                              AND BlogId = @{nameof(BlogEditor.BlogId)}";
+                              WHERE UserId = @{nameof(BlogUser.UserId)} 
+                              AND BlogId = @{nameof(BlogUser.BlogId)}";
 
-            BlogEditor entity = new BlogEditor { BlogId = blog.Id, UserId = user.Id };
+            BlogUser entity = new BlogUser { BlogId = blog.Id, UserId = user.Id };
 
             int? rowsAffected = null;
             using (var connection = _connectionFactory.GetDefaultConnection())

@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlogApp.Models.Dtos
+namespace BlogApp.Models
 {
-    public class BlogOwnerDto
+    public class BlogUser
     {
         [Required]
-        public int UserId { get; set; }
-        [Required]
         public int BlogId { get; set; }
-
+        [Required]
+        public int UserId { get; set; }
     }
 }

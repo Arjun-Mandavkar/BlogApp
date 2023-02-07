@@ -7,9 +7,9 @@ namespace BlogApp.Services.BlogServices
     public interface IBlogCommentService
     {
         public Task<ServiceResult> CommentOnBlog(BlogCommentDto comment);
-        public Task<ServiceResult> DeleteComment(BlogCommentDto comment);
+        public Task<ServiceResult> DeleteComment(int commentId);
         public Task<ServiceResult> EditComment(BlogCommentDto comment);
-        public Task<IEnumerable<BlogComment>> GetAllCommentsOfBlog(int blogId);
-        public Task<bool> UpdateCommentForUserDeletion(ApplicationUser user);
+        public Task<IEnumerable<BlogCommentDto>> GetAllCommentsOfBlog(int blogId);
+        public Task<bool> UpdateCommentForUserDeletion(int userId);
     }
 }

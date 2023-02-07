@@ -113,12 +113,12 @@ namespace BlogApp.Controllers
                     return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "Invalid user id." }));
 
                 //set isOwnerExists false in owners table
-                if (!await _blogOwnerService.UpdateOwnerEntryForUserDeletion(user))
+                if (!await _blogOwnerService.UpdateOwnerEntryForUserDeletion(user.Id))
                     return StatusCode(200, _responseMapper.Map(new Message { Code = "Error", Description = "Failed to update owner table." },
                                                                new Message { Code = "Message", Description = "User deleted successfully." }));
 
                 //Set isUserExists false in comments table
-                if (! await _blogCommentService.UpdateCommentForUserDeletion(user))
+                if (! await _blogCommentService.UpdateCommentForUserDeletion(user.Id))
                     return StatusCode(200, _responseMapper.Map(new Message { Code = "Error", Description = "Failed to update comment table." },
                                                                new Message { Code = "Message", Description = "User deleted successfully." }));
 

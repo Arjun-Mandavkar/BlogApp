@@ -14,17 +14,17 @@ namespace BlogApp.Repositories.Implementations
         {
             _connectionFactory = connectionFactory;
         }
-        public async Task<bool> IsOwner(BlogOwner blog)
+        public async Task<bool> IsOwner(int userId, int blogId)
         {
             string query = $@"SELECT [BlogId],[UserId] FROM [BlogOwners]
-                              WHERE UserId = @{nameof(BlogOwner.UserId)} 
-                              AND BlogId = @{nameof(BlogOwner.BlogId)}";
+                              WHERE UserId = @UserId 
+                              AND BlogId = @BlogId";
 
             BlogOwner entry = null;
             using(var connection = _connectionFactory.GetDefaultConnection())
             {
                 await connection.OpenAsync();
-                entry = await connection.QuerySingleOrDefaultAsync<BlogOwner>(query, blog);
+                entry = await connection.QuerySingleOrDefaultAsync<BlogOwner>(query, new { BlogId = blogId, UserId = userId });
             }
             return (entry == null) ? false : true;
         }
@@ -47,17 +47,17 @@ namespace BlogApp.Repositories.Implementations
                 return IdentityResult.Failed();
         }
 
-        public async Task<IdentityResult> RevokeOwner(BlogOwner blog)
+        public async Task<IdentityResult> RevokeOwner(int userId, int blogId)
         {
             string query = $@"DELETE FROM [BlogOwners]
-                              WHERE UserId = @{nameof(BlogOwner.UserId)} 
-                              AND BlogId = @{nameof(BlogOwner.BlogId)}"; 
+                              WHERE UserId = @UserId 
+                              AND BlogId = @BlogId"; 
 
             int? rowsAffected = null;
             using (var connection = _connectionFactory.GetDefaultConnection())
             {
                 await connection.OpenAsync();
-                rowsAffected = await connection.ExecuteAsync(query, blog);
+                rowsAffected = await connection.ExecuteAsync(query, new { BlogId = blogId, UserId = userId });
             }
             if (rowsAffected == 1)
                 return IdentityResult.Success;
