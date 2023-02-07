@@ -1,12 +1,16 @@
 ﻿using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
+using Boolean = BlogApp.Models.Response.Boolean;
 
 namespace BlogApp.Services.MappingServices
 {
     public interface IResponseMapper : IMapper<Exception, ApiResponse>,
                                        IMapper<UserInfoDto, ApiResponse>,
                                        IMapper<Message, ApiResponse>,
-                                       IMapper<ServiceResult, ApiResponse>
+                                       IMapper<ServiceResult, ApiResponse>,
+                                       IMapper<Boolean, ApiResponse>,
+                                       IMapper<IEnumerable<BlogCommentDto>, ApiResponse>,
+                                       IMapper<BlogAuthorsDto, ApiResponse>
     {
         /// <summary>
         /// Used only for returning 'ERROR' messages

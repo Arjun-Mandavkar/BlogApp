@@ -1,5 +1,7 @@
-﻿using BlogApp.Models.Dtos;
+﻿using System.Xml.Linq;
+using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
+using Boolean = BlogApp.Models.Response.Boolean;
 
 namespace BlogApp.Services.MappingServices.Implementations
 {
@@ -58,6 +60,24 @@ namespace BlogApp.Services.MappingServices.Implementations
         {
             IsSuccess = result.Succeeded,
             Data = result.Messages
+        };
+
+        public ApiResponse Map(Boolean result) => new ApiResponse
+        {
+            IsSuccess = true,
+            Data = new List<Boolean> { result }
+        };
+
+        public ApiResponse Map(IEnumerable<BlogCommentDto> comments) => new ApiResponse
+        {
+            IsSuccess = true,
+            Data = comments
+        };
+
+        public ApiResponse Map(BlogAuthorsDto dto) => new ApiResponse
+        {
+            IsSuccess = true,
+            Data = new List<BlogAuthorsDto> { dto }
         };
     }
 }

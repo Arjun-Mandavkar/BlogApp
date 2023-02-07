@@ -1,6 +1,8 @@
-﻿namespace BlogApp.Models.Dtos
+﻿using BlogApp.Models.Response;
+
+namespace BlogApp.Models.Dtos
 {
-    public class BlogDto
+    public class BlogDto : IResponseData
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;

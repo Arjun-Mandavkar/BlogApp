@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using BlogApp.Models.Response;
 
 namespace BlogApp.Models.Dtos
 {
-    public class BlogCommentDto
+    public class BlogCommentDto : IResponseData
     {
         public int Id { get; set; }
-        [Required]
         public int BlogId { get; set; }
-        [Required]
         public string Text { get; set; } = string.Empty;
     }
 }
