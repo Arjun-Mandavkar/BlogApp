@@ -13,6 +13,9 @@ using BlogApp.Repositories.Implementations;
 using BlogApp.Repositories;
 using BlogApp.Validations;
 using BlogApp.Validations.Implementations;
+using BlogApp.Services.BlogServices;
+using BlogApp.Services.BlogServices.Implementation;
+using BlogApp.Services.MappingServices;
 
 namespace BlogApp
 {
@@ -46,17 +49,39 @@ namespace BlogApp
 
             builder.Services.AddControllers();
 
+            //Auxiliary objects
             builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactoryImpl>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddSingleton<PasswordHasher<ApplicationUser>>();
 
-            builder.Services.AddScoped<IUserCrudService, UserCrudService>();
-            builder.Services.AddScoped<IUserAuthService, UserAuthService>();
-            builder.Services.AddScoped<IUserRoleService, UserRoleService>();
+            //Services should be of scope singleton. Services should be stateless, and hence they don't need more than one instance.
+            //User services
+            builder.Services.AddSingleton<IUserCrudService, UserCrudService>();
+            builder.Services.AddSingleton<IUserAuthService, UserAuthService>();
+            builder.Services.AddSingleton<IUserRoleService, UserRoleService>();
 
-            builder.Services.AddScoped<IUserValidation, UserValidation>();
+            //Blog services
+            builder.Services.AddSingleton<IBlogCrudService, BlogCrudService>();
+            builder.Services.AddSingleton<IBlogEditorService, BlogEditorService>();
+            builder.Services.AddSingleton<IBlogOwnerService, BlogOwnerService>();
+            builder.Services.AddSingleton<IBlogRolesService, BlogRolesService>();
+            builder.Services.AddSingleton<IBlogCommentService, BlogCommentService>();
+            builder.Services.AddSingleton<IBlogLikeService, BlogLikeService>();
 
+            //Mapping services
+            builder.Services.AddSingleton<IUserMapper, UserMapper>();
+            builder.Services.AddSingleton<IBlogMapper, BlogMapper>();
+            builder.Services.AddSingleton<IXResultServiceMapper, XResultServiceMapper>();
+            builder.Services.AddSingleton<IResponseMapper, ResponseMapper>();
+
+            //Validations
+            builder.Services.AddSingleton<IUserValidation, UserValidation>();
+            builder.Services.AddSingleton<IBlogValidation, BlogValidation>();
+            builder.Services.AddSingleton<IBlogRoleValidation, BlogRoleValidation>();
+
+            //Repository objects should be transient as they are using dbConnection objects
             builder.Services.AddTransient<IUserStore<ApplicationUser>, UserStoreImpl>();
+            builder.Services.AddTransient<IMyUserStore, UserStoreImpl>();
             builder.Services.AddTransient<IBlogStore<Blog>, BlogStoreImpl>();
             builder.Services.AddTransient<IBlogLikesStore<Blog, ApplicationUser>, BlogLikesStoreImpl>();
             builder.Services.AddTransient<IBlogCommentsStore<BlogComment>, BlogCommentsStoreImpl>();

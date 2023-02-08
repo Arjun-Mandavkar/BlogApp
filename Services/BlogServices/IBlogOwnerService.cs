@@ -4,7 +4,7 @@ using BlogApp.Models.Response;
 
 namespace BlogApp.Services.BlogServices
 {
-    public interface IBlogOwnerStore : IBlogRoleService
+    public interface IBlogOwnerService : IBlogRoleService
     {
 
     }
