@@ -56,6 +56,7 @@ namespace BlogApp.Services
         {
             if (exception is SqlException) return (int)HttpStatusCode.BadRequest;
             else if (exception is InvalidOperationException) return (int)HttpStatusCode.BadRequest;
+            else if (exception is NullReferenceException) return (int)HttpStatusCode.InternalServerError;
             else return (int)HttpStatusCode.InternalServerError;    // Internal Server Error by default
         }
     }

@@ -1,6 +1,5 @@
 ﻿using BlogApp.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+using BlogApp.Repositories;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,13 +11,13 @@ namespace BlogApp.Services.UserServices.Implementations
     {
         private readonly IConfiguration _configuration;
         private IHttpContextAccessor _httpContextAccessor;
-        private IUserCrudService _userCrudService;
+        private IMyUserStore _userStore;
 
-        public UserAuthService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IUserCrudService userCrudService)
+        public UserAuthService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IMyUserStore userStore)
         {
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
-            _userCrudService = userCrudService;
+            _userStore = userStore;
         }
 
         public async Task<string> GenerateToken(ApplicationUser user)
@@ -60,7 +59,7 @@ namespace BlogApp.Services.UserServices.Implementations
             string userId = _httpContextAccessor.HttpContext.User.Claims
                             .FirstOrDefault(c => c.Type == "Id").Value;
 
-            ApplicationUser user = await _userCrudService.FindById(userId.ToString());
+            ApplicationUser user = await _userStore.FindByIdAsync(userId.ToString(), CancellationToken.None);
             return user;
         }
     }

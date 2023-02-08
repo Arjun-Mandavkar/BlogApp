@@ -81,7 +81,9 @@ namespace BlogApp
 
             //Repository objects should be transient as they are using dbConnection objects
             builder.Services.AddTransient<IUserStore<ApplicationUser>, UserStoreImpl>();
+            builder.Services.AddTransient<IRoleStore<IdentityRole>, RoleStoreImpl>();
             builder.Services.AddTransient<IMyUserStore, UserStoreImpl>();
+            builder.Services.AddTransient<IUserRolesStore<IdentityRole, ApplicationUser>, UserRolesStoreImpl>();
             builder.Services.AddTransient<IBlogStore<Blog>, BlogStoreImpl>();
             builder.Services.AddTransient<IBlogLikesStore<Blog, ApplicationUser>, BlogLikesStoreImpl>();
             builder.Services.AddTransient<IBlogCommentsStore<BlogComment>, BlogCommentsStoreImpl>();
@@ -89,6 +91,7 @@ namespace BlogApp
             builder.Services.AddTransient<IBlogEditorsStore<Blog, ApplicationUser>, BlogEditorsStoreImpl>();
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddDefaultTokenProviders();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

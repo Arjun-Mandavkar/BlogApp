@@ -22,11 +22,15 @@ namespace BlogApp.Controllers
         private IUserMapper _userMappings { get; }
         private IResponseMapper _responseMappings { get; }
 
-        public AuthController(IUserValidation userValidation, IUserCrudService userCrudService, IUserMapper userMappings)
+        public AuthController(IUserValidation userValidation,
+                              IUserCrudService userCrudService,
+                              IUserMapper userMappings,
+                              IResponseMapper responseMappings)
         {
             _userValidation = userValidation;
             _userCrudService = userCrudService;
             _userMappings = userMappings;
+            _responseMappings = responseMappings;
         }
 
         [HttpPost]
@@ -56,7 +60,8 @@ namespace BlogApp.Controllers
             AuthUserInfoDto result = await _userMappings.MapAuthUser(user);
 
             //Prepare response object and return
-            return StatusCode(201, _responseMappings.Map(result));
+            ApiResponse response = _responseMappings.Map(result);
+            return StatusCode(201, response);
         }
 
         [HttpPost]
