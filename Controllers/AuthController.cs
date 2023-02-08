@@ -88,16 +88,22 @@ namespace BlogApp.Controllers
         [Route("DeleteAccount")]
         public async Task<ActionResult<ApiResponse>> DeleteAccount(LoginUserDto dto)
         {
-            var result = await Login(dto);
-            if(result.Value.IsSuccess == true)
-            {
-                ServiceResult res = await _userCrudService.SoftDeleteUser(dto.Email);
-                return Ok(_responseMappings.Map(res));
-            }
+            ApplicationUser user = await _userCrudService.FindByEmail(dto.Email);
+
+            //Chech user exists or not
+            if (user == null)
+                return BadRequest(_responseMappings.Map(new Message { Code = "Error", Description = "Invalid Email. Try registring first." }));
+
+            //Verify password
+            if (!await _userValidation.ValidatePassword(user, dto.Password))
+                return BadRequest(_responseMappings.Map(new Message { Code = "Error", Description = "Invalid Password." }));
+
+            ServiceResult res = await _userCrudService.SoftDeleteUser(dto.Email);
+            if (res.Succeeded)
+                return Ok(res.Messages);
+
             else
-            {
-                return result;
-            }
+                return _responseMappings.Map(new Message { Code = "Error", Description = "User deletion failed." });
         }
     }
 }
