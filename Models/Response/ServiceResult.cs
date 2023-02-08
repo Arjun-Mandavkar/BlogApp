@@ -2,7 +2,7 @@
 {
     public class ServiceResult
     {
-        private IEnumerable<Message> _messages = new List<Message>();
+        private List<Message> _messages = new List<Message>();
         public bool Succeeded { get; set; } = true;
         public IEnumerable<Message> Messages => _messages;
         public static ServiceResult Success(params Message[] messages)
@@ -10,8 +10,7 @@
             ServiceResult result = new ServiceResult();
             if (messages != null)
             {
-                foreach (var m in messages)
-                    result._messages.Append(m);
+                result._messages.AddRange(messages);
             }
             return result;
         }
@@ -20,8 +19,7 @@
             ServiceResult result = new ServiceResult { Succeeded = false };
             if(messages != null)
             {
-                foreach(var m in messages)
-                    result._messages.Append(m);
+                result._messages.AddRange(messages);
             }
             return result;
         }

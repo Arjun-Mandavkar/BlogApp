@@ -45,6 +45,10 @@ namespace BlogApp.Services.UserServices.Implementations
         public async Task<ServiceResult> SoftDeleteUser(string email)
         {
             IdentityResult result = await _userStore.SoftDeleteAsync(email);
+
+            if (result.Succeeded)
+                return ServiceResult.Success(new Message { Code = "Message", Description = "User deleted successfully." });
+
             return _resultMapper.Map(result);
         }
 

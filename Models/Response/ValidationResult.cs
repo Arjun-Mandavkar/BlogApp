@@ -1,8 +1,10 @@
-﻿namespace BlogApp.Models.Response
+﻿using System.Linq;
+
+namespace BlogApp.Models.Response
 {
     public class ValidationResult
     {
-        private IEnumerable<Message> _messages = new List<Message>();
+        private List<Message> _messages = new List<Message>();
 
         public bool Succeeded { get; set; } = true;
 
@@ -15,8 +17,7 @@
             ValidationResult result = new ValidationResult { Succeeded = false };
             if (messages != null)
             {
-                foreach (var m in messages)
-                    result._messages.Append(m);
+                result._messages.AddRange(messages);
             }
             return result;
         }

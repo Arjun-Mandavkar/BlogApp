@@ -134,7 +134,7 @@ namespace BlogApp.Repositories.Implementations
         public async Task<IdentityResult> SoftDeleteAsync(string email)
         {
             string query = $@"UPDATE [Users] SET
-                               [IsDeleted] = @IsDeleted,
+                               [IsDeleted] = @IsDeleted
                                WHERE [Email] = @Email";
 
             int? rowsAffected = null;
