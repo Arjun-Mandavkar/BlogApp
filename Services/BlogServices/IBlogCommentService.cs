@@ -10,6 +10,5 @@ namespace BlogApp.Services.BlogServices
         public Task<ServiceResult> DeleteComment(int commentId);
         public Task<ServiceResult> EditComment(BlogCommentDto comment);
         public Task<IEnumerable<BlogCommentDto>> GetAllCommentsOfBlog(int blogId);
-        public Task<bool> UpdateCommentForUserDeletion(int userId);
     }
 }

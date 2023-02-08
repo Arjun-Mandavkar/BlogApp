@@ -19,9 +19,7 @@ namespace BlogApp.Repositories.Implementations
                               VALUES(@{nameof(BlogComment.UserId)},
                                      @{nameof(BlogComment.BlogId)},
                                      @{nameof(BlogComment.Text)},
-                                     @{nameof(BlogComment.TimeStamp)},
-                                     @{nameof(BlogComment.UserName)},
-                                     @{nameof(BlogComment.IsUserExists)});
+                                     @{nameof(BlogComment.TimeStamp)};
                               SELECT CAST(SCOPE_IDENTITY() as int)";
 
             using (var connection = _connectionFactory.GetDefaultConnection())
@@ -101,20 +99,6 @@ namespace BlogApp.Repositories.Implementations
                 return IdentityResult.Success;
             else
                 return IdentityResult.Failed();
-        }
-
-        public async Task<IdentityResult> SetIsUserExistsFalse(int userId)
-        {
-            string query = $@"UPDATE [BlogComments]
-                              SET [IsUserExists]=@{nameof(BlogComment.IsUserExists)},[UserId]=0
-                              WHERE [UserId]=@{nameof(BlogComment.UserId)};";
-
-            using (var connection = _connectionFactory.GetDefaultConnection())
-            {
-                await connection.OpenAsync();
-                await connection.ExecuteAsync(query, new BlogComment { UserId = userId, IsUserExists = false });
-            }
-            return IdentityResult.Success;
         }
     }
 }

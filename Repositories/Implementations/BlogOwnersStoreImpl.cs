@@ -32,7 +32,7 @@ namespace BlogApp.Repositories.Implementations
         {
             string query = $@"INSERT INTO [BlogOwners]
                               ([UserId],[BlogId],[OwnerName],[IsOwnerExists])
-                              VALUES(@{nameof(BlogOwner.UserId)},@{nameof(BlogOwner.BlogId)},@{nameof(BlogOwner.OwnerName)},@{nameof(BlogOwner.IsOwnerExists)})";
+                              VALUES(@{nameof(BlogOwner.UserId)},@{nameof(BlogOwner.BlogId)})";
 
             int? rowsAffected = null;
 
@@ -93,38 +93,6 @@ namespace BlogApp.Repositories.Implementations
                 result = await connection.QueryAsync<int>(query, new { BlogId = blogId });
             }
             return result;
-        }
-
-        public async Task<IdentityResult> Update(BlogOwner blog)
-        {
-            string query = $@"UPDATE [BlogOwners]
-                              SET [OwnerName]=@{nameof(BlogOwner.OwnerName)},[IsOwnerExists]=@{nameof(BlogOwner.IsOwnerExists)}
-                              WHERE [UserId]=@{nameof(BlogOwner.UserId)} AND [BlogId]=@{nameof(BlogOwner.BlogId)};";
-            
-            int? rowsAffected = null;
-            using (var connection = _connectionFactory.GetDefaultConnection())
-            {
-                await connection.OpenAsync();
-                rowsAffected = await connection.ExecuteAsync(query, blog);
-            }
-            if (rowsAffected == 1)
-                return IdentityResult.Success;
-            else
-                return IdentityResult.Failed();
-        }
-
-        public async Task<IdentityResult> SetIsOwnerExistsFalse(int userId)
-        {
-            string query = $@"UPDATE [BlogOwners]
-                              SET [IsOwnerExists]=@{nameof(BlogOwner.IsOwnerExists)},[UserId]=0
-                              WHERE [UserId]=@{nameof(BlogOwner.UserId)};";
-
-            using (var connection = _connectionFactory.GetDefaultConnection())
-            {
-                await connection.OpenAsync();
-                await connection.ExecuteAsync(query, new BlogOwner { UserId = userId, IsOwnerExists = false });
-            }
-            return IdentityResult.Success;
         }
     }
 }

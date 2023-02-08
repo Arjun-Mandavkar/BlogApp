@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using BlogApp.Models.Response;
+﻿using BlogApp.Models.Response;
 
 namespace BlogApp.Models.Dtos
 {

@@ -78,5 +78,21 @@ namespace BlogApp.Controllers
 
             return Ok(_responseMappings.Map(result));
         }
+
+        [HttpPost]
+        [Route("DeleteAccount")]
+        public async Task<ActionResult<ApiResponse>> DeleteAccount(LoginUserDto dto)
+        {
+            var result = await Login(dto);
+            if(result.Value.IsSuccess == true)
+            {
+                ServiceResult res = await _userCrudService.SoftDeleteUser(dto.Email);
+                return Ok(_responseMappings.Map(res));
+            }
+            else
+            {
+                return result;
+            }
+        }
     }
 }

@@ -6,6 +6,6 @@ namespace BlogApp.Services.BlogServices
 {
     public interface IBlogOwnerStore : IBlogRoleService
     {
-        public Task<bool> UpdateOwnerEntryForUserDeletion(int userId);
+
     }
 }

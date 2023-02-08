@@ -1,6 +1,7 @@
 ﻿using BlogApp.Models;
 using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
+using BlogApp.Repositories;
 using BlogApp.Services.MappingServices;
 using Microsoft.AspNetCore.Identity;
 
@@ -8,10 +9,10 @@ namespace BlogApp.Services.UserServices.Implementations
 {
     public class UserCrudService : IUserCrudService
     {
-        private IUserStore<ApplicationUser> _userStore;
+        private IMyUserStore _userStore;
         private IUserMapper _userMapper;
         private IXResultServiceMapper _resultMapper;
-        public UserCrudService(IUserStore<ApplicationUser> userStore, IUserMapper userMapper, IXResultServiceMapper identityServiceMapper)
+        public UserCrudService(IMyUserStore userStore, IUserMapper userMapper, IXResultServiceMapper identityServiceMapper)
         {
             _userStore = userStore;
             _userMapper = userMapper;
@@ -39,6 +40,12 @@ namespace BlogApp.Services.UserServices.Implementations
         public async Task<ApplicationUser> FindById(string userId)
         {
             return await _userStore.FindByIdAsync(userId, CancellationToken.None);
+        }
+
+        public async Task<ServiceResult> SoftDeleteUser(string email)
+        {
+            IdentityResult result = await _userStore.SoftDeleteAsync(email);
+            return _resultMapper.Map(result);
         }
 
         public async Task<ServiceResult> UpdateUser(ApplicationUser detachedUser)

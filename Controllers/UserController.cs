@@ -17,8 +17,6 @@ namespace BlogApp.Controllers
     public class UserController : ControllerBase
     {
         private IUserCrudService _userCrudService { get; }
-        private IBlogOwnerStore _blogOwnerService { get; }
-        private IBlogCommentService _blogCommentService { get; }
         private IUserMapper _userMapper { get; }
         private IResponseMapper _responseMapper { get; }
 
@@ -42,7 +40,7 @@ namespace BlogApp.Controllers
             {
                 return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "Invalid user id." }));
             }
-            
+
         }
 
         [HttpGet]
@@ -83,7 +81,7 @@ namespace BlogApp.Controllers
             }
 
             UserInfoDto userDto = _userMapper.Map(user);
-            return StatusCode(201, _responseMapper.Map(userDto)); 
+            return StatusCode(201, _responseMapper.Map(userDto));
         }
 
         [HttpPut]
@@ -105,25 +103,10 @@ namespace BlogApp.Controllers
             if (user == null)
                 return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "User not found." }));
 
-            using (var tr = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            {
-                //Delete the user
-                ServiceResult res = await _userCrudService.DeleteUser(user);
-                if (! res.Succeeded)
-                    return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "Invalid user id." }));
-
-                //set isOwnerExists false in owners table
-                if (!await _blogOwnerService.UpdateOwnerEntryForUserDeletion(user.Id))
-                    return StatusCode(200, _responseMapper.Map(new Message { Code = "Error", Description = "Failed to update owner table." },
-                                                               new Message { Code = "Message", Description = "User deleted successfully." }));
-
-                //Set isUserExists false in comments table
-                if (! await _blogCommentService.UpdateCommentForUserDeletion(user.Id))
-                    return StatusCode(200, _responseMapper.Map(new Message { Code = "Error", Description = "Failed to update comment table." },
-                                                               new Message { Code = "Message", Description = "User deleted successfully." }));
-
-                tr.Complete();
-            }
+            //Soft Delete the user
+            ServiceResult res = await _userCrudService.SoftDeleteUser(user.Email);
+            if (!res.Succeeded)
+                return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "User deletion failed." }));
 
             UserInfoDto userDto = _userMapper.Map(user);
             return Ok(_responseMapper.Map(userDto));

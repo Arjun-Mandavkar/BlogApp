@@ -9,7 +9,5 @@ namespace BlogApp.Repositories
         public Task<IdentityResult> RevokeOwner(int userId, int blogId);
         public Task<TBlogOwner> Get(int userId, int blogId);
         public Task<IEnumerable<int>> Get(int blogId);
-        public Task<IdentityResult> Update(TBlogOwner blog);
-        public Task<IdentityResult> SetIsOwnerExistsFalse(int userId);
     }
 }

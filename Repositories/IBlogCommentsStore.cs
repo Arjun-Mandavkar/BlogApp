@@ -10,6 +10,5 @@ namespace BlogApp.Repositories
         public Task<IdentityResult> DeleteAsync(TComment comment);
         public Task<IEnumerable<TComment>> GetAllFromBlogAsync(int blogId);
         public Task<IEnumerable<TComment>> GetAllFromUserAsync(int userId);
-        public Task<IdentityResult> SetIsUserExistsFalse(int userId);
     }
 }

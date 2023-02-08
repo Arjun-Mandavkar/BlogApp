@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Dapper;
 using BlogApp.DbConnection;
+using System.Threading;
 
 namespace BlogApp.Repositories.Implementations
 {
-    public class UserStoreImpl : IUserStore<ApplicationUser>
+    public class UserStoreImpl : IMyUserStore
     {
         private IDbConnectionFactory _connectionFactory { get; }
 
@@ -128,6 +129,25 @@ namespace BlogApp.Repositories.Implementations
                 return IdentityResult.Success;
             else
                 return IdentityResult.Failed(new IdentityError { Code = "Error", Description = "Updation of user failed."});
+        }
+
+        public async Task<IdentityResult> SoftDeleteAsync(string email)
+        {
+            string query = $@"UPDATE [Users] SET
+                               [IsDeleted] = @IsDeleted,
+                               WHERE [Email] = @Email";
+
+            int? rowsAffected = null;
+            using (var connection = _connectionFactory.GetDefaultConnection())
+            {
+                await connection.OpenAsync();
+                rowsAffected = await connection.ExecuteAsync(query, new { IsDeleted = true, Email = email});
+            }
+
+            if (rowsAffected == 1)
+                return IdentityResult.Success;
+            else
+                return IdentityResult.Failed(new IdentityError { Code = "Error", Description = "Deletion of user failed." });
         }
     }
 }

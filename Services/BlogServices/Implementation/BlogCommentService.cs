@@ -130,14 +130,5 @@ namespace BlogApp.Services.BlogServices.Implementation
 
             return result;
         }
-
-        public async Task<bool> UpdateCommentForUserDeletion(int userId)
-        {
-            IdentityResult result = await _blogCommentStore.SetIsUserExistsFalse(userId);
-            if (result.Succeeded)
-                return true;
-            else
-                return false;
-        }
     }
 }

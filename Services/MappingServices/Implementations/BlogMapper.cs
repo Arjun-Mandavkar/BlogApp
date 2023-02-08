@@ -34,15 +34,13 @@ namespace BlogApp.Services.MappingServices.Implementations
             Id = dto.Id,
             Text = dto.Text,
             UserId = user.Id,
-            BlogId = dto.BlogId,
-            UserName = user.Name
+            BlogId = dto.BlogId
         };
 
         public BlogOwner Map(BlogUserObject source) => new BlogOwner
         {
             UserId = source.User.Id,
-            BlogId = source.Blog.Id,
-            OwnerName = source.User.Name
+            BlogId = source.Blog.Id
         };
     }
 }

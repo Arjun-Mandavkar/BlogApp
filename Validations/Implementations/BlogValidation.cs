@@ -1,8 +1,5 @@
-﻿using System.Reflection.Metadata;
-using BlogApp.Models;
-using BlogApp.Models.Dtos;
+﻿using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BlogApp.Validations.Implementations

@@ -75,14 +75,5 @@ namespace BlogApp.Services.BlogServices.Implementation
             else
                 return ServiceResult.Success(new Message { Code = "Message", Description = "User is not an owner." });
         }
-
-        public async Task<bool> UpdateOwnerEntryForUserDeletion(int userId)
-        {
-            IdentityResult result = await _blogOwnerStore.SetIsOwnerExistsFalse(userId);
-            if (result.Succeeded)
-                return true;
-            else
-                return false;
-        }
     }
 }
