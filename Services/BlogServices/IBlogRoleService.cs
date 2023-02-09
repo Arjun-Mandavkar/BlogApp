@@ -6,8 +6,8 @@ namespace BlogApp.Services.BlogServices
 {
     public interface IBlogRoleService
     {
-        public Task<IEnumerable<UserInfoDto>> GetAll(Blog blog);
-        public Task<ServiceResult> Assign(Blog blog, ApplicationUser user);
-        public Task<ServiceResult> Revoke(Blog blog, ApplicationUser user);
+        public Task<IEnumerable<UserInfoDto>> GetAll(int blogId);
+        public Task<ServiceResult> Assign(int blogId, int userId);
+        public Task<ServiceResult> Revoke(int blogId, int userId);
     }
 }

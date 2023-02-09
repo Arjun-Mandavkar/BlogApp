@@ -44,40 +44,35 @@ namespace BloggingApplication.Controllers
 
         /*--------------------- CRUD --------------------*/
         [HttpGet]
-        public async Task<IEnumerable<BlogDto>> GetAll()
+        public async Task<ActionResult<List<BlogDto>>> GetAll()
         {
-            IEnumerable<Blog> blogs = await _blogCrudService.GetAll();
-            IEnumerable<BlogDto> dtos = new List<BlogDto>();
-            foreach (var b in blogs)
-            {
-                dtos.Append(_blogMapper.Map(b));
-            }
-            return dtos;
+            IEnumerable<BlogDto> blogs = await _blogCrudService.GetAll();
+            return Ok(blogs);
         }
 
         [HttpGet("{blogId}")]
-        public async Task<BlogDto> Get(int blogId)
+        public async Task<ActionResult<ApiResponse<BlogDto>>> Get(int blogId)
         {
-            Blog dto = await _blogCrudService.Get(blogId);
-            return _blogMapper.Map(dto);
+            BlogDto dto = await _blogCrudService.Get(blogId);
+            return _responseMapper.Map(dto);
         }
 
         [HttpPost("Create")]
-        public async Task<ApiResponse> Create(BlogDto blog)
+        public async Task<ApiResponse<List<Message>>> Create(BlogDto blog)
         {
             ServiceResult result = await _blogCrudService.Create(blog);
             return _responseMapper.Map(result);
         }
 
         [HttpPut("Update")]
-        public async Task<ApiResponse> Update(BlogDto blog)
+        public async Task<ApiResponse<List<Message>>> Update(BlogDto blog)
         {
             ServiceResult result = await _blogCrudService.Update(blog);
             return _responseMapper.Map(result);
 
         }
         [HttpDelete("{blogId}")]
-        public async Task<ApiResponse> Delete(int blogId)
+        public async Task<ApiResponse<List<Message>>> Delete(int blogId)
         {
             ServiceResult result = await _blogCrudService.Delete(blogId);
             return _responseMapper.Map(result);
@@ -86,81 +81,80 @@ namespace BloggingApplication.Controllers
 
         /*------------------------ Likes --------------------------*/
         [HttpGet("IsLiked/{blogId}")]
-        public async Task<ActionResult<ApiResponse>> IsBlogLiked(int blogId)
+        public async Task<ActionResult<ApiResponse<Boolean>>> IsBlogLiked(int blogId)
         {
             Boolean res = new Boolean();
             res.Result = await _blogLikeService.IsLiked(blogId);
-            return _responseMapper.Map(res);
+            return Ok(_responseMapper.Map(res));
         }
 
         [HttpGet("Like/{blogId}")]
-        public async Task<ActionResult<ApiResponse>> LikeBlog(int blogId)
+        public async Task<ActionResult<ApiResponse<List<Message>>>> LikeBlog(int blogId)
         {
             ServiceResult result = await _blogLikeService.LikeBlog(blogId);
-            return _responseMapper.Map(result);
+            return Ok(_responseMapper.Map(result));
 
         }
         [HttpDelete("Like/{blogId}")]
-        public async Task<ActionResult<ApiResponse>> DeleteLikeBlog(int blogId)
+        public async Task<ActionResult<ApiResponse<List<Message>>>> DeleteLikeBlog(int blogId)
         {
             ServiceResult result = await _blogLikeService.DeleteLikeBlog(blogId);
-            return _responseMapper.Map(result);
+            return Ok(_responseMapper.Map(result));
         }
 
         /*----------------------- Comments ------------------------*/
         [HttpPost("Comment")]
-        public async Task<ActionResult<ApiResponse>> CommentOnBlog(BlogCommentDto dto)
+        public async Task<ActionResult<ApiResponse<List<Message>>>> CommentOnBlog(BlogCommentDto dto)
         {
             ServiceResult result = await _blogCommentService.CommentOnBlog(dto);
-            return _responseMapper.Map(result);
+            return Ok(_responseMapper.Map(result));
         }
 
         [HttpDelete("Comment/Delete")]
-        public async Task<ActionResult<ApiResponse>> DeleteComment(int commentId)
+        public async Task<ActionResult<ApiResponse<List<Message>>>> DeleteComment(int commentId)
         {
             ServiceResult result = await _blogCommentService.DeleteComment(commentId);
-            return _responseMapper.Map(result);
+            return Ok(_responseMapper.Map(result));
         }
 
         [HttpPut("Comment")]
-        public async Task<ActionResult<ApiResponse>> UpdateComment(BlogCommentDto dto)
+        public async Task<ActionResult<ApiResponse<List<Message>>>> UpdateComment(BlogCommentDto dto)
         {
             ServiceResult result = await _blogCommentService.EditComment(dto);
-            return _responseMapper.Map(result);
+            return Ok(_responseMapper.Map(result));
         }
 
         [HttpGet("Comment/{blogId}")]
-        public async Task<ActionResult<ApiResponse>> GetAllCommentsOfBlog(int blogId)
+        public async Task<ActionResult<ApiResponse<List<BlogCommentDto>>>> GetAllCommentsOfBlog(int blogId)
         {
             IEnumerable<BlogCommentDto> comments = await _blogCommentService.GetAllCommentsOfBlog(blogId);
-            return _responseMapper.Map(comments);
+            return Ok(_responseMapper.Map(comments.ToList()));
         }
 
         /*---------------------- Assign Role ----------------------*/
 
         [HttpGet("Authors/{blogId}")]
-        public async Task<ActionResult<ApiResponse>> GetAuthors(int blogId)
+        public async Task<ActionResult<ApiResponse<BlogAuthorsDto>>> GetAuthors(int blogId)
         {
-            Blog blog = await _blogCrudService.Get(blogId);
             BlogAuthorsDto result = new BlogAuthorsDto();
-            result.Editors = await _blogEditorService.GetAll(blog);
-            result.Owners = await _blogOwnerService.GetAll(blog);
+            result.Editors = await _blogEditorService.GetAll(blogId);
+            result.Owners = await _blogOwnerService.GetAll(blogId);
 
-            return _responseMapper.Map(result);
+            return Ok(_responseMapper.Map(result));
         }
 
         [HttpPost("AssignRoles")]
-        public async Task<ActionResult<ApiResponse>> AssignRoles(BlogRoleDto dto)
+        public async Task<ActionResult<ApiResponse<List<Message>>>> AssignRoles(BlogRoleDto dto)
         {
             ServiceResult result = await _blogRolesService.AssignRoles(dto);
-            return _responseMapper.Map(result);
+            return Ok(_responseMapper.Map(result));
         }
 
         [HttpPost("RevokeRoles")]
-        public async Task<ActionResult<ApiResponse>> RevokeRoles(BlogRoleDto dto)
+        public async Task<ActionResult<ApiResponse<List<Message>>>> RevokeRoles(BlogRoleDto dto)
         {
             ServiceResult result = await _blogRolesService.RevokeRoles(dto);
-            return _responseMapper.Map(result);
+            return Ok(_responseMapper.Map(result));
         }
     }
 }

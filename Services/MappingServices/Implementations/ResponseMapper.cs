@@ -7,13 +7,13 @@ namespace BlogApp.Services.MappingServices.Implementations
 {
     public class ResponseMapper : IResponseMapper
     {
-        public ApiResponse Map(Exception ex) => new ApiResponse
+        public ApiResponse<Message> Map(Exception ex) => new ApiResponse<Message>
         {
             IsSuccess = false,
-            Data = new List<Message> { new Message { Code = "Error", Description = ex.Message } }
+            Data = new Message { Code = "Error", Description = ex.Message  }
         };
 
-        public ApiResponse MapDev(Exception ex) => new ApiResponse
+        public ApiResponse<List<Message>> MapDev(Exception ex) => new ApiResponse<List<Message>>
         {
             IsSuccess = false,
             Data = new List<Message> { new Message { Code = "Error", Description = ex.Message },
@@ -21,10 +21,10 @@ namespace BlogApp.Services.MappingServices.Implementations
             }
         };
 
-        public ApiResponse Map(UserInfoDto user) => new ApiResponse
+        public ApiResponse<UserInfoDto> Map(UserInfoDto user) => new ApiResponse<UserInfoDto>
         {
             IsSuccess = true,
-            Data = new List<UserInfoDto> { user }
+            Data =  user 
         };
 
         /// <summary>
@@ -32,52 +32,64 @@ namespace BlogApp.Services.MappingServices.Implementations
         /// </summary>
         /// <param name="message"></param>
         /// <returns>Information about failure</returns>
-        public ApiResponse Map(Message message) => new ApiResponse
+        public ApiResponse<Message> Map(Message message) => new ApiResponse<Message>
         {
             IsSuccess = false,
-            Data = new List<Message> { message }
+            Data = message
         };
 
-        public ApiResponse MapMessage(Message message) => new ApiResponse
+        public ApiResponse<Message> MapMessage(Message message) => new ApiResponse<Message>
         {
             IsSuccess = true,
-            Data = new List<Message> { message }
+            Data = message
         };
 
-        public ApiResponse Map(params Message[] messages) => new ApiResponse
+        public ApiResponse<List<Message>> Map(params Message[] messages) => new ApiResponse<List<Message>>
         {
             IsSuccess = false,
-            Data =  messages
+            Data = messages.ToList()
         };
 
-        public ApiResponse MapMessages(params Message[] messages) => new ApiResponse
+        public ApiResponse<List<Message>> MapMessages(params Message[] messages) => new ApiResponse<List<Message>>
         {
             IsSuccess = true,
-            Data = messages
+            Data = messages.ToList()
         };
 
-        public ApiResponse Map(ServiceResult result) => new ApiResponse
+        public ApiResponse<List<Message>> Map(ServiceResult result) => new ApiResponse<List<Message>>
         {
             IsSuccess = result.Succeeded,
-            Data = result.Messages
+            Data = result.Messages.ToList()
         };
 
-        public ApiResponse Map(Boolean result) => new ApiResponse
+        public ApiResponse<Boolean> Map(Boolean result) => new ApiResponse<Boolean>
         {
             IsSuccess = true,
-            Data = new List<Boolean> { result }
+            Data =  result 
         };
 
-        public ApiResponse Map(IEnumerable<BlogCommentDto> comments) => new ApiResponse
+        public ApiResponse<List<BlogCommentDto>> Map(List<BlogCommentDto> comments) => new ApiResponse<List<BlogCommentDto>>
         {
             IsSuccess = true,
-            Data = comments
+            Data = comments.ToList()
         };
 
-        public ApiResponse Map(BlogAuthorsDto dto) => new ApiResponse
+        public ApiResponse<BlogAuthorsDto> Map(BlogAuthorsDto dto) => new ApiResponse<BlogAuthorsDto>
         {
             IsSuccess = true,
-            Data = new List<BlogAuthorsDto> { dto }
+            Data = dto
+        };
+
+        public ApiResponse<BlogDto> Map(BlogDto source) => new ApiResponse<BlogDto>
+        {
+            IsSuccess = true,
+            Data = source
+        };
+
+        public ApiResponse<List<BlogDto>> Map(List<BlogDto> source) => new ApiResponse<List<BlogDto>>
+        {
+            IsSuccess = true,
+            Data = source
         };
     }
 }

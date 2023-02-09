@@ -14,20 +14,23 @@ namespace BlogApp.Services.BlogServices.Implementation
         private IUserCrudService _userCrudService;
         private IUserMapper _userMapper;
         private IBlogMapper _blogMapper;
+        private IBlogStore<Blog> _blogStore;
         public BlogOwnerService(IBlogOwnersStore<BlogOwner> blogOwnerStore,
                                 IUserCrudService userCrudService,
                                 IUserMapper userMapper,
-                                IBlogMapper blogMapper)
+                                IBlogMapper blogMapper,
+                                IBlogStore<Blog> blogStore)
         {
             _blogOwnerStore = blogOwnerStore;
             _userCrudService = userCrudService;
             _userMapper = userMapper;
             _blogMapper = blogMapper;
+            _blogStore = blogStore;
         }
 
-        public async Task<IEnumerable<UserInfoDto>> GetAll(Blog blog)
+        public async Task<IEnumerable<UserInfoDto>> GetAll(int blogId)
         {
-            IEnumerable<int> ids = await _blogOwnerStore.Get(blog.Id);
+            IEnumerable<int> ids = await _blogOwnerStore.Get(blogId);
 
             IEnumerable<ApplicationUser> users = new List<ApplicationUser>();
             foreach (int id in ids)
@@ -40,8 +43,16 @@ namespace BlogApp.Services.BlogServices.Implementation
             return result;
         }
 
-        public async Task<ServiceResult> Assign(Blog blog, ApplicationUser user)
+        public async Task<ServiceResult> Assign(int blogId, int userId)
         {
+            ApplicationUser user = await _userCrudService.FindById(userId.ToString());
+            if (user == null)
+                return ServiceResult.Failed(new Message { Code = "Error", Description = "User not found." });
+
+            Blog blog = await _blogStore.GetByIdAsync(blogId);
+            if (blog == null)
+                return ServiceResult.Failed(new Message { Code = "Error", Description = "Blog not found." });
+
             bool isSpecifiedUserOwner = await _blogOwnerStore.IsOwner(user.Id, blog.Id);
 
             BlogUserObject blogUser = new BlogUserObject { Blog = blog, User = user };
@@ -59,8 +70,16 @@ namespace BlogApp.Services.BlogServices.Implementation
                 return ServiceResult.Success(new Message { Code = "Message", Description = "User is already an owner." });
         }
 
-        public async Task<ServiceResult> Revoke(Blog blog, ApplicationUser user)
+        public async Task<ServiceResult> Revoke(int blogId, int userId)
         {
+            ApplicationUser user = await _userCrudService.FindById(userId.ToString());
+            if (user == null)
+                return ServiceResult.Failed(new Message { Code = "Error", Description = "User not found." });
+
+            Blog blog = await _blogStore.GetByIdAsync(blogId);
+            if (blog == null)
+                return ServiceResult.Failed(new Message { Code = "Error", Description = "Blog not found." });
+
             bool isSpecifiedUserOwner = await _blogOwnerStore.IsOwner(user.Id, blog.Id);
 
             if (isSpecifiedUserOwner)
