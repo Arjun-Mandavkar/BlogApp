@@ -35,7 +35,7 @@ namespace BlogApp.Controllers
 
         [HttpPost]
         [Route("Register")]
-        public async Task<ActionResult<ApiResponse>> Register(RegisterUserDto dto)
+        public async Task<ActionResult<ApiResponse<UserInfoDto>>> Register(RegisterUserDto dto)
         {
             ApplicationUser user = await _userCrudService.FindByEmail(dto.Email);
 
@@ -60,13 +60,13 @@ namespace BlogApp.Controllers
             AuthUserInfoDto result = await _userMappings.MapAuthUser(user);
 
             //Prepare response object and return
-            ApiResponse response = _responseMappings.Map(result);
+            ApiResponse<UserInfoDto> response = _responseMappings.Map(result);
             return StatusCode(201, response);
         }
 
         [HttpPost]
         [Route("Login")]
-        public async Task<ActionResult<ApiResponse>> Login(LoginUserDto dto)
+        public async Task<ActionResult<ApiResponse<UserInfoDto>>> Login(LoginUserDto dto)
         {
             ApplicationUser user = await _userCrudService.FindByEmail(dto.Email);
 
@@ -86,7 +86,7 @@ namespace BlogApp.Controllers
 
         [HttpPost]
         [Route("DeleteAccount")]
-        public async Task<ActionResult<ApiResponse>> DeleteAccount(LoginUserDto dto)
+        public async Task<ActionResult<ApiResponse<Message>>> DeleteAccount(LoginUserDto dto)
         {
             ApplicationUser user = await _userCrudService.FindByEmail(dto.Email);
 
@@ -101,9 +101,8 @@ namespace BlogApp.Controllers
             ServiceResult res = await _userCrudService.SoftDeleteUser(dto.Email);
             if (res.Succeeded)
                 return Ok(res.Messages);
-
             else
-                return _responseMappings.Map(new Message { Code = "Error", Description = "User deletion failed." });
+                return BadRequest(_responseMappings.Map(new Message { Code = "Error", Description = "User deletion failed." }));
         }
     }
 }

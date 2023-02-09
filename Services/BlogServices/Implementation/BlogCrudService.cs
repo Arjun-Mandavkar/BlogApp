@@ -78,14 +78,22 @@ namespace BlogApp.Services.BlogServices.Implementation
             return ServiceResult.Success(new Message { Code = "Message", Description = "Blog deleted successfully." });
         }
 
-        public async Task<Blog> Get(int blogId)
+        public async Task<BlogDto> Get(int blogId)
         {
-            return await _blogStore.GetByIdAsync(blogId);
+            Blog blog = await _blogStore.GetByIdAsync(blogId);
+            BlogDto dto = _blogMapper.Map(blog);
+            return dto;
         }
 
-        public async Task<IEnumerable<Blog>> GetAll()
+        public async Task<IEnumerable<BlogDto>> GetAll()
         {
-            return await _blogStore.GetAllAsync();
+            IEnumerable<Blog> blogs = await _blogStore.GetAllAsync();
+            IEnumerable<BlogDto> dtos = new List<BlogDto>();
+            foreach (Blog blog in blogs)
+            {
+                dtos.Append(_blogMapper.Map(blog));
+            }
+            return dtos;
         }
 
         public async Task<ServiceResult> Update(BlogDto blog)

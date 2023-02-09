@@ -28,7 +28,7 @@ namespace BlogApp.Controllers
 
         [HttpGet]
         [Route("{userId}")]
-        public async Task<ActionResult<ApiResponse>> GetById(string userId)
+        public async Task<ActionResult<ApiResponse<UserInfoDto>>> GetById(string userId)
         {
             ApplicationUser user = await _userCrudService.FindById(userId);
             if (user == null)
@@ -45,7 +45,7 @@ namespace BlogApp.Controllers
 
         [HttpGet]
         [Route("{email}")]
-        public async Task<ActionResult<ApiResponse>> GetByEmail(string email)
+        public async Task<ActionResult<ApiResponse<UserInfoDto>>> GetByEmail(string email)
         {
             ApplicationUser user = await _userCrudService.FindByEmail(email);
             if (user == null)
@@ -62,7 +62,7 @@ namespace BlogApp.Controllers
 
         [HttpPost]
         [Route("Create")]
-        public async Task<ActionResult<ApiResponse>> Create(RegisterUserDto dto)
+        public async Task<ActionResult<ApiResponse<UserInfoDto>>> Create(RegisterUserDto dto)
         {
             ApplicationUser user = await _userCrudService.FindByEmail(dto.Email);
 
@@ -86,16 +86,16 @@ namespace BlogApp.Controllers
 
         [HttpPut]
         [Route("Update")]
-        public async Task<ActionResult<ApiResponse>> Update(RegisterUserDto dto)
+        public async Task<ActionResult<ApiResponse<List<Message>>>> Update(RegisterUserDto dto)
         {
             ServiceResult result = await _userCrudService.UpdateUser(_userMapper.Map(dto));
-            ApiResponse response = _responseMapper.Map(result);
+            ApiResponse<List<Message>> response = _responseMapper.Map(result);
             return result.Succeeded == true ? Ok(response) : BadRequest(response);
         }
 
         [HttpDelete]
         [Route("{userId}")]
-        public async Task<ActionResult<ApiResponse>> Delete(int userId)
+        public async Task<ActionResult<ApiResponse<UserInfoDto>>> Delete(int userId)
         {
             ApplicationUser user = await _userCrudService.FindById(userId.ToString());
 
