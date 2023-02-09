@@ -2,8 +2,9 @@
 using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
 using BlogApp.Repositories;
-using BlogApp.Services.MappingServices;
 using BlogApp.Services.UserServices;
+using BlogApp.Utilities.JwtUtils;
+using BlogApp.Utilities.MappingUtils;
 using BlogApp.Validations;
 using Microsoft.AspNetCore.Identity;
 
@@ -15,24 +16,27 @@ namespace BlogApp.Services.BlogServices.Implementation
         private IBlogValidation _blogValidation;
         private IBlogRoleValidation _blogRoleValidation;
         private IUserValidation _userValidation;
-        private IUserAuthService _userAuthService;
         private IBlogMapper _blogMapper;
         private IXResultServiceMapper _resultMapper;
+        private IAuthUtils _authUtils;
+        private IUserStore<ApplicationUser> _userStore;
         public BlogCrudService(IBlogStore<Blog> blogStore,
                                IBlogValidation blogValidation,
                                IBlogRoleValidation blogRoleValidation,
                                IUserValidation userValidation,
-                               IUserAuthService userAuthService,
                                IBlogMapper blogMapper,
-                               IXResultServiceMapper resultMapper)
+                               IXResultServiceMapper resultMapper,
+                               IAuthUtils authUtils,
+                               IUserStore<ApplicationUser> userStore)
         {
             _blogStore = blogStore;
             _blogValidation = blogValidation;
             _blogRoleValidation = blogRoleValidation;
             _userValidation = userValidation;
-            _userAuthService = userAuthService;
             _blogMapper = blogMapper;
             _resultMapper = resultMapper;
+            _authUtils = authUtils;
+            _userStore = userStore;
         }
 
         public async Task<ServiceResult> Create(BlogDto blog)
@@ -59,7 +63,8 @@ namespace BlogApp.Services.BlogServices.Implementation
                 return ServiceResult.Failed(new Message { Code = "Error", Description = "Invalid blog Id OR blog already deleted." });
 
             //Fetch logged in user
-            ApplicationUser loggedInUser = await _userAuthService.GetLoggedInUser();
+            string userId = await _authUtils.GetLoggedInUserId();
+            ApplicationUser loggedInUser = await _userStore.FindByIdAsync(userId, CancellationToken.None);
 
             //Check wheather user is one of the owners or admin
             bool isOwner = await _blogRoleValidation.ValidateOwner(loggedInUser, blog);
@@ -107,7 +112,8 @@ namespace BlogApp.Services.BlogServices.Implementation
             Blog blogEntity = _blogMapper.Map(blog);
 
             //Fetch logged in user
-            ApplicationUser loggedInUser = await _userAuthService.GetLoggedInUser();
+            string userId = await _authUtils.GetLoggedInUserId();
+            ApplicationUser loggedInUser = await _userStore.FindByIdAsync(userId, CancellationToken.None);
 
             //Check wheather user is one of the owners or editors or admin
             bool isOwner = await _blogRoleValidation.ValidateOwner(loggedInUser, blogEntity);

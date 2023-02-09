@@ -1,7 +1,7 @@
 ﻿using BlogApp.Models;
 using BlogApp.Models.Dtos;
 
-namespace BlogApp.Services.MappingServices
+namespace BlogApp.Utilities.MappingUtils
 {
     public interface IBlogMapper : IMapper<BlogDto, Blog>,
                                    IMapper<Blog, BlogDto>,

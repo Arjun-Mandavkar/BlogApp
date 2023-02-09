@@ -2,7 +2,7 @@
 using BlogApp.Models.Response;
 using Boolean = BlogApp.Models.Response.Boolean;
 
-namespace BlogApp.Services.MappingServices
+namespace BlogApp.Utilities.MappingUtils
 {
     public interface IResponseMapper : IMapper<Exception, ApiResponse<Message>>,
                                        IMapper<UserInfoDto, ApiResponse<UserInfoDto>>,

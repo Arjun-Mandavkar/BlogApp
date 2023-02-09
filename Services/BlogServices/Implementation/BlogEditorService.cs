@@ -2,8 +2,8 @@
 using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
 using BlogApp.Repositories;
-using BlogApp.Services.MappingServices;
 using BlogApp.Services.UserServices;
+using BlogApp.Utilities.MappingUtils;
 using Microsoft.AspNetCore.Identity;
 
 namespace BlogApp.Services.BlogServices.Implementation

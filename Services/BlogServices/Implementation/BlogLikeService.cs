@@ -3,6 +3,7 @@ using BlogApp.Models;
 using BlogApp.Models.Response;
 using BlogApp.Repositories;
 using BlogApp.Services.UserServices;
+using BlogApp.Utilities.JwtUtils;
 using Microsoft.AspNetCore.Identity;
 
 namespace BlogApp.Services.BlogServices.Implementation
@@ -10,15 +11,18 @@ namespace BlogApp.Services.BlogServices.Implementation
     public class BlogLikeService : IBlogLikeService
     {
         private IBlogStore<Blog> _blogStore;
-        private IUserAuthService _userAuthService;
         private IBlogLikesStore<Blog, ApplicationUser> _blogLikesStore;
+        private IUserStore<ApplicationUser> _userStore;
+        private IAuthUtils _authUtils;
         public BlogLikeService(IBlogStore<Blog> blogStore,
-                               IUserAuthService userAuthService,
-                               IBlogLikesStore<Blog, ApplicationUser> blogLikesStore)
+                               IBlogLikesStore<Blog, ApplicationUser> blogLikesStore,
+                               IAuthUtils authUtils,
+                               IUserStore<ApplicationUser> userStore)
         {
             _blogStore = blogStore;
-            _userAuthService = userAuthService;
             _blogLikesStore = blogLikesStore;
+            _authUtils = authUtils;
+            _userStore = userStore;
         }
 
         public async Task<bool> IsLiked(int blogId)
@@ -28,7 +32,8 @@ namespace BlogApp.Services.BlogServices.Implementation
             if (blog == null) return false;
 
             //Fetch logged in user details
-            ApplicationUser user = await _userAuthService.GetLoggedInUser();
+            string userId = await _authUtils.GetLoggedInUserId();
+            ApplicationUser user = await _userStore.FindByIdAsync(userId, CancellationToken.None);
 
             return await _blogLikesStore.IsLikedAsync(blog, user);
         }
@@ -41,11 +46,12 @@ namespace BlogApp.Services.BlogServices.Implementation
                 return ServiceResult.Failed(new Message { Code = "Message", Description = "Blog not found" });
 
             //Fetch logged in user details
-            ApplicationUser user = await _userAuthService.GetLoggedInUser();
+            string userId = await _authUtils.GetLoggedInUserId();
+            ApplicationUser user = await _userStore.FindByIdAsync(userId, CancellationToken.None);
 
             bool res = await _blogLikesStore.IsLikedAsync(blog, user);
             if (res)
-                return ServiceResult.Failed(new Message { Code = "Message", Description = "Already Liked" });
+                return ServiceResult.Success(new Message { Code = "Message", Description = "Already Liked" });
             else
             {
                 using (var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -73,7 +79,8 @@ namespace BlogApp.Services.BlogServices.Implementation
                 return ServiceResult.Failed(new Message { Code = "Message", Description = "Blog not found" });
 
             //Fetch logged in user details
-            ApplicationUser user = await _userAuthService.GetLoggedInUser();
+            string userId = await _authUtils.GetLoggedInUserId();
+            ApplicationUser user = await _userStore.FindByIdAsync(userId, CancellationToken.None);
 
             bool res = await _blogLikesStore.IsLikedAsync(blog, user);
             if (res)

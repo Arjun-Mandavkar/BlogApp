@@ -9,8 +9,8 @@ namespace BlogApp.Services.UserServices
         public Task<ApplicationUser> FindByEmail(string email);
         public Task<ApplicationUser> FindById(string userId);
         public Task<ApplicationUser> CreateUser(RegisterUserDto dto);
-        public Task<ServiceResult> UpdateUser(ApplicationUser detachedUser);
-        public Task<ServiceResult> DeleteUser(ApplicationUser user);
+        public Task<ServiceResult> UpdateUser(RegisterUserDto dto);
+        public Task<ServiceResult> DeleteUser(string userId);
         public Task<ServiceResult> SoftDeleteUser(string email);
     }
 }

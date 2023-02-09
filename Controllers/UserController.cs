@@ -2,8 +2,8 @@
 using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
 using BlogApp.Services.BlogServices;
-using BlogApp.Services.MappingServices;
 using BlogApp.Services.UserServices;
+using BlogApp.Utilities.MappingUtils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -88,28 +88,21 @@ namespace BlogApp.Controllers
         [Route("Update")]
         public async Task<ActionResult<ApiResponse<List<Message>>>> Update(RegisterUserDto dto)
         {
-            ServiceResult result = await _userCrudService.UpdateUser(_userMapper.Map(dto));
+            ServiceResult result = await _userCrudService.UpdateUser(dto);
             ApiResponse<List<Message>> response = _responseMapper.Map(result);
             return result.Succeeded == true ? Ok(response) : BadRequest(response);
         }
 
         [HttpDelete]
         [Route("{userId}")]
-        public async Task<ActionResult<ApiResponse<UserInfoDto>>> Delete(int userId)
+        public async Task<ActionResult<ApiResponse<UserInfoDto>>> Delete(string email)
         {
-            ApplicationUser user = await _userCrudService.FindById(userId.ToString());
-
-            //Chech user exists or not
-            if (user == null)
-                return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "User not found." }));
-
             //Soft Delete the user
-            ServiceResult res = await _userCrudService.SoftDeleteUser(user.Email);
+            ServiceResult res = await _userCrudService.SoftDeleteUser(email);
             if (!res.Succeeded)
                 return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "User deletion failed." }));
 
-            UserInfoDto userDto = _userMapper.Map(user);
-            return Ok(_responseMapper.Map(userDto));
+            return Ok(_responseMapper.Map(new Message { Code = "Error", Description = "User deleted successfully." }));
         }
     }
 }

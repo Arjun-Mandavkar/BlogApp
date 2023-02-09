@@ -1,25 +1,21 @@
-﻿using BlogApp.Models;
-using BlogApp.Repositories;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using BlogApp.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
-namespace BlogApp.Services.UserServices.Implementations
+namespace BlogApp.Utilities.JwtUtils.Implementations
 {
-    public class UserAuthService : IUserAuthService
+    public class AuthUtils : IAuthUtils
     {
         private readonly IConfiguration _configuration;
         private IHttpContextAccessor _httpContextAccessor;
-        private IMyUserStore _userStore;
-
-        public UserAuthService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IMyUserStore userStore)
+        public AuthUtils(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
-            _userStore = userStore;
         }
-
         public async Task<string> GenerateToken(ApplicationUser user)
         {
             //Generate the token
@@ -29,7 +25,7 @@ namespace BlogApp.Services.UserServices.Implementations
                     {
                         new Claim("Id", user.Id.ToString()),
                         new Claim("Email", user.Email),
-                        new Claim("Name", user.Name),
+                new Claim("Name", user.Name),
                         new Claim(ClaimTypes.Role, user.Role.ToString())
                     };
 
@@ -45,7 +41,7 @@ namespace BlogApp.Services.UserServices.Implementations
             JwtSecurityToken jwtToken = new JwtSecurityToken(
             signingCredentials: creds,
             claims: myClaims,
-                expires: DateTime.Now.AddDays(1),
+            expires: DateTime.Now.AddDays(1),
                 issuer: _configuration.GetSection("AuthSettings:Issuer").Value,
                 audience: _configuration.GetSection("AuthSettings:Audience").Value
             );
@@ -54,13 +50,12 @@ namespace BlogApp.Services.UserServices.Implementations
             return new JwtSecurityTokenHandler().WriteToken(jwtToken);
         }
 
-        public async Task<ApplicationUser> GetLoggedInUser()
+        public async Task<string> GetLoggedInUserId()
         {
             string userId = _httpContextAccessor.HttpContext.User.Claims
                             .FirstOrDefault(c => c.Type == "Id").Value;
 
-            ApplicationUser user = await _userStore.FindByIdAsync(userId.ToString(), CancellationToken.None);
-            return user;
+            return userId;
         }
     }
 }

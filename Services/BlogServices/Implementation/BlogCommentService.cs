@@ -2,8 +2,9 @@
 using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
 using BlogApp.Repositories;
-using BlogApp.Services.MappingServices;
 using BlogApp.Services.UserServices;
+using BlogApp.Utilities.JwtUtils;
+using BlogApp.Utilities.MappingUtils;
 using BlogApp.Validations;
 using Microsoft.AspNetCore.Identity;
 
@@ -16,26 +17,29 @@ namespace BlogApp.Services.BlogServices.Implementation
         private IBlogValidation _blogValidation;
         private IXResultServiceMapper _resultMapper;
         private IBlogMapper _blogMapper;
-        private IUserAuthService _userAuthService;
         private IUserValidation _userValidation;
         private IBlogRoleValidation _blogRoleValidation;
+        private IAuthUtils _authUtils;
+        private IUserStore<ApplicationUser> _userStore;
         public BlogCommentService(IBlogStore<Blog> blogStore,
                                   IBlogCommentsStore<BlogComment> blogCommentStore,
                                   IBlogValidation blogValidation,
                                   IXResultServiceMapper resultMapper,
                                   IBlogMapper blogMapper,
-                                  IUserAuthService userAuthService,
                                   IUserValidation userValidation,
-                                  IBlogRoleValidation blogRoleValidation)
+                                  IBlogRoleValidation blogRoleValidation,
+                                  IAuthUtils authUtils,
+                                  IUserStore<ApplicationUser> userStore)
         {
             _blogStore = blogStore;
             _blogCommentStore = blogCommentStore;
             _blogValidation = blogValidation;
             _resultMapper = resultMapper;
             _blogMapper = blogMapper;
-            _userAuthService = userAuthService;
             _userValidation = userValidation;
             _blogRoleValidation = blogRoleValidation;
+            _authUtils = authUtils;
+            _userStore = userStore;
         }
 
         public async Task<ServiceResult> CommentOnBlog(BlogCommentDto comment)
@@ -47,7 +51,8 @@ namespace BlogApp.Services.BlogServices.Implementation
             if(!res.Succeeded)
                 return _resultMapper.Map(res);
 
-            ApplicationUser loggedInUser = await _userAuthService.GetLoggedInUser();
+            string userId = await _authUtils.GetLoggedInUserId();
+            ApplicationUser loggedInUser = await _userStore.FindByIdAsync(userId, CancellationToken.None);
 
             //Create entity of BlogComment
             BlogComment commentEntity = _blogMapper.Map(comment, loggedInUser);
@@ -66,7 +71,8 @@ namespace BlogApp.Services.BlogServices.Implementation
             if (detachedObject == null)
                 return ServiceResult.Failed(new Message { Code = "Error", Description = "Invalid comment Id." });
 
-            ApplicationUser loggedInUser = await _userAuthService.GetLoggedInUser();
+            string userId = await _authUtils.GetLoggedInUserId();
+            ApplicationUser loggedInUser = await _userStore.FindByIdAsync(userId, CancellationToken.None);
 
             //Check for valid blog
             Blog blog = await _blogStore.GetByIdAsync(detachedObject.BlogId);
@@ -98,7 +104,9 @@ namespace BlogApp.Services.BlogServices.Implementation
                 return ServiceResult.Failed(new Message { Code = "Error", Description = "Comment object should be detached." });
 
             BlogComment detachedObject = await _blogCommentStore.GetAsync(comment.Id);
-            ApplicationUser loggedInUser = await _userAuthService.GetLoggedInUser();
+
+            string userId = await _authUtils.GetLoggedInUserId();
+            ApplicationUser loggedInUser = await _userStore.FindByIdAsync(userId, CancellationToken.None);
 
             //Check for correct user
             if (loggedInUser.Id != detachedObject.UserId)

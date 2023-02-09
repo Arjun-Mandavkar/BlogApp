@@ -1,8 +1,7 @@
-﻿using BlogApp.Models;
-using BlogApp.Models.Dtos;
+﻿using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
 using BlogApp.Services.BlogServices;
-using BlogApp.Services.MappingServices;
+using BlogApp.Utilities.MappingUtils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -93,8 +92,8 @@ namespace BloggingApplication.Controllers
         {
             ServiceResult result = await _blogLikeService.LikeBlog(blogId);
             return Ok(_responseMapper.Map(result));
-
         }
+
         [HttpDelete("Like/{blogId}")]
         public async Task<ActionResult<ApiResponse<List<Message>>>> DeleteLikeBlog(int blogId)
         {

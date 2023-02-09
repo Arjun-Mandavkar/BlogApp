@@ -1,13 +1,13 @@
 ﻿using BlogApp.Models.Response;
 using Microsoft.AspNetCore.Identity;
 
-namespace BlogApp.Services.MappingServices.Implementations
+namespace BlogApp.Utilities.MappingUtils.Implementations
 {
     public class XResultServiceMapper : IXResultServiceMapper
     {
         public ServiceResult Map(IdentityResult result)
         {
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
                 return ServiceResult.Success();
             }
@@ -25,7 +25,7 @@ namespace BlogApp.Services.MappingServices.Implementations
         public ServiceResult Map(ValidationResult result)
         {
             return result.Succeeded == true ?
-                ServiceResult.Success() : 
+                ServiceResult.Success() :
                 ServiceResult.Failed(result.Messages.ToArray());
         }
     }

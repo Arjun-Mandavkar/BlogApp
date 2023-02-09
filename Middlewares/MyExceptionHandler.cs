@@ -1,8 +1,6 @@
-﻿using BlogApp.Services.MappingServices;
+﻿using BlogApp.Utilities.MappingUtils;
 using Microsoft.Data.SqlClient;
 using System.Net;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace BlogApp.Services
 {

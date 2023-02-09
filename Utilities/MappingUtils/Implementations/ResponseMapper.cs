@@ -1,16 +1,15 @@
-﻿using System.Xml.Linq;
-using BlogApp.Models.Dtos;
+﻿using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
 using Boolean = BlogApp.Models.Response.Boolean;
 
-namespace BlogApp.Services.MappingServices.Implementations
+namespace BlogApp.Utilities.MappingUtils.Implementations
 {
     public class ResponseMapper : IResponseMapper
     {
         public ApiResponse<Message> Map(Exception ex) => new ApiResponse<Message>
         {
             IsSuccess = false,
-            Data = new Message { Code = "Error", Description = ex.Message  }
+            Data = new Message { Code = "Error", Description = ex.Message }
         };
 
         public ApiResponse<List<Message>> MapDev(Exception ex) => new ApiResponse<List<Message>>
@@ -24,7 +23,7 @@ namespace BlogApp.Services.MappingServices.Implementations
         public ApiResponse<UserInfoDto> Map(UserInfoDto user) => new ApiResponse<UserInfoDto>
         {
             IsSuccess = true,
-            Data =  user 
+            Data = user
         };
 
         /// <summary>
@@ -65,7 +64,7 @@ namespace BlogApp.Services.MappingServices.Implementations
         public ApiResponse<Boolean> Map(Boolean result) => new ApiResponse<Boolean>
         {
             IsSuccess = true,
-            Data =  result 
+            Data = result
         };
 
         public ApiResponse<List<BlogCommentDto>> Map(List<BlogCommentDto> comments) => new ApiResponse<List<BlogCommentDto>>

@@ -1,7 +1,6 @@
 using BlogApp.DbConnection.Implementations;
 using BlogApp.DbConnection;
 using BlogApp.Services;
-using BlogApp.Services.MappingServices.Implementations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -15,7 +14,8 @@ using BlogApp.Validations;
 using BlogApp.Validations.Implementations;
 using BlogApp.Services.BlogServices;
 using BlogApp.Services.BlogServices.Implementation;
-using BlogApp.Services.MappingServices;
+using BlogApp.Utilities.MappingUtils;
+using BlogApp.Utilities.MappingUtils.Implementations;
 
 namespace BlogApp
 {
@@ -57,7 +57,6 @@ namespace BlogApp
             //Services should be of scope singleton. Services should be stateless, and hence they don't need more than one instance.
             //User services
             builder.Services.AddSingleton<IUserCrudService, UserCrudService>();
-            builder.Services.AddSingleton<IUserAuthService, UserAuthService>();
             builder.Services.AddSingleton<IUserRoleService, UserRoleService>();
 
             //Blog services

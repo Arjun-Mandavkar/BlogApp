@@ -1,14 +1,12 @@
 ﻿using BlogApp.Models;
 using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
-using BlogApp.Services.MappingServices;
 using BlogApp.Services.UserServices;
+using BlogApp.Utilities.JwtUtils;
+using BlogApp.Utilities.MappingUtils;
 using BlogApp.Validations;
 using BloggingApplication.Models.Dtos;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using System.Transactions;
 
 namespace BlogApp.Controllers
@@ -21,16 +19,18 @@ namespace BlogApp.Controllers
         private IUserCrudService _userCrudService { get; }
         private IUserMapper _userMappings { get; }
         private IResponseMapper _responseMappings { get; }
-
+        private IAuthUtils _authUtils { get; }
         public AuthController(IUserValidation userValidation,
                               IUserCrudService userCrudService,
                               IUserMapper userMappings,
-                              IResponseMapper responseMappings)
+                              IResponseMapper responseMappings,
+                              IAuthUtils authUtils)
         {
             _userValidation = userValidation;
             _userCrudService = userCrudService;
             _userMappings = userMappings;
             _responseMappings = responseMappings;
+            _authUtils = authUtils;
         }
 
         [HttpPost]
@@ -57,7 +57,8 @@ namespace BlogApp.Controllers
             }
 
             //Prepare dto object
-            AuthUserInfoDto result = await _userMappings.MapAuthUser(user);
+            string token = await _authUtils.GenerateToken(user);
+            AuthUserInfoDto result = _userMappings.Map(user, token);
 
             //Prepare response object and return
             ApiResponse<UserInfoDto> response = _responseMappings.Map(result);
@@ -78,8 +79,9 @@ namespace BlogApp.Controllers
             if (! await _userValidation.ValidatePassword(user, dto.Password))
                 return BadRequest(_responseMappings.Map(new Message { Code = "Error", Description = "Invalid Password." }));
 
-            //Prepare dto and return response
-            AuthUserInfoDto result = await _userMappings.MapAuthUser(user);
+            //Prepare dto object
+            string token = await _authUtils.GenerateToken(user);
+            AuthUserInfoDto result = _userMappings.Map(user, token);
 
             return Ok(_responseMappings.Map(result));
         }
