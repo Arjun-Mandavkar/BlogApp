@@ -8,5 +8,6 @@ namespace BlogApp.Utilities.MappingUtils
     {
         public AuthUserInfoDto Map(ApplicationUser user, string token);
         public ApplicationUser Map(RegisterUserDto user, string passwordHash);
+        public RegisterUserDto MapExt(ApplicationUser user);
     }
 }

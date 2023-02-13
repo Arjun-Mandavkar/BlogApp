@@ -35,7 +35,7 @@ namespace BlogApp.Controllers
 
         [HttpPost]
         [Route("Register")]
-        public async Task<ActionResult<ApiResponse<UserInfoDto>>> Register(RegisterUserDto dto)
+        public async Task<ActionResult<ApiResponse<AuthUserInfoDto>>> Register(RegisterUserDto dto)
         {
             ApplicationUser user = await _userCrudService.FindByEmail(dto.Email);
 
@@ -67,7 +67,7 @@ namespace BlogApp.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public async Task<ActionResult<ApiResponse<UserInfoDto>>> Login(LoginUserDto dto)
+        public async Task<ActionResult<ApiResponse<AuthUserInfoDto>>> Login(LoginUserDto dto)
         {
             ApplicationUser user = await _userCrudService.FindByEmail(dto.Email);
 

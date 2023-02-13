@@ -1,12 +1,14 @@
 ﻿using BlogApp.Models;
 using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
+using BlogApp.Utilities.MappingUtils;
 
 namespace BlogApp.Services.UserServices.Implementations
 {
     public class UserRoleService : IUserRoleService
     {
         private IUserCrudService _userCrudService;
+        private IUserMapper _userMapper;
         public UserRoleService(IUserCrudService userCrudService)
         {
             _userCrudService = userCrudService;
@@ -26,7 +28,7 @@ namespace BlogApp.Services.UserServices.Implementations
             else
             {
                 user.Role = role;
-                return await _userCrudService.UpdateUser(user);
+                return await _userCrudService.UpdateUser(_userMapper.MapExt(user));
             }
         }
     }

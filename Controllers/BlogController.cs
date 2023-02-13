@@ -15,7 +15,6 @@ namespace BloggingApplication.Controllers
     public class BlogController : ControllerBase
     {
         private IBlogCrudService _blogCrudService;
-        private IBlogMapper _blogMapper;
         private IResponseMapper _responseMapper;
         private IBlogLikeService _blogLikeService;
         private IBlogCommentService _blogCommentService;
@@ -23,7 +22,6 @@ namespace BloggingApplication.Controllers
         private IBlogEditorService _blogEditorService;
         private IBlogRolesService _blogRolesService;
         public BlogController(IBlogCrudService blogCrudService,
-                              IBlogMapper blogMapper,
                               IResponseMapper responseMapper,
                               IBlogLikeService blogLikeService,
                               IBlogCommentService blogCommentService,
@@ -32,7 +30,6 @@ namespace BloggingApplication.Controllers
                               IBlogRolesService blogRolesService)
         {
             _blogCrudService = blogCrudService;
-            _blogMapper = blogMapper;
             _responseMapper = responseMapper;
             _blogLikeService = blogLikeService;
             _blogCommentService = blogCommentService;

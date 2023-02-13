@@ -31,6 +31,11 @@ namespace BlogApp.Utilities.MappingUtils.Implementations
             PasswordHash = passwordHash
         };
 
-
+        public RegisterUserDto MapExt(ApplicationUser user) => new RegisterUserDto
+        {
+            Email = user.Email,
+            Name = user.Name,
+            Role = user.Role
+        };
     }
 }
