@@ -56,13 +56,18 @@ namespace BlogApp.Services.BlogServices.Implementation
                 using (var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
                     //Insert Like
-                    IdentityResult result = await _blogLikesStore.LikeAsync(blog, user);
-                    if (!result.Succeeded)
-                        return ServiceResult.Failed(new Message { Code = "Message", Description = "Blog like failed!" });
+                    Task<IdentityResult> result1 = _blogLikesStore.LikeAsync(blog, user);
+                    Task<IdentityResult> result2 = _blogStore.IncrementLike(blog.Id);
 
-                    result = await _blogStore.IncrementLike(blog.Id);
-                    if (!result.Succeeded)
+                    if (result1.IsCompleted && !result1.GetAwaiter().GetResult().Succeeded)
+                    {
+                        return ServiceResult.Failed(new Message { Code = "Message", Description = "Blog like failed!" });
+                    }
+
+                    if (!result2.IsCompleted && !result1.GetAwaiter().GetResult().Succeeded)
+                    {
                         return ServiceResult.Failed(new Message { Code = "Error", Description = "Blog like increment failed!" });
+                    }
 
                     tx.Complete();
                 }
