@@ -16,6 +16,8 @@ using BlogApp.Services.BlogServices;
 using BlogApp.Services.BlogServices.Implementation;
 using BlogApp.Utilities.MappingUtils;
 using BlogApp.Utilities.MappingUtils.Implementations;
+using BlogApp.Utilities.JwtUtils;
+using BlogApp.Utilities.JwtUtils.Implementations;
 
 namespace BlogApp
 {
@@ -52,7 +54,7 @@ namespace BlogApp
             //Auxiliary objects
             builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactoryImpl>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            builder.Services.AddSingleton<PasswordHasher<ApplicationUser>>();
+            builder.Services.AddTransient<PasswordHasher<ApplicationUser>>();
 
             //Services should be of scope singleton. Services should be stateless, and hence they don't need more than one instance.
             //User services
@@ -67,11 +69,15 @@ namespace BlogApp
             builder.Services.AddSingleton<IBlogCommentService, BlogCommentService>();
             builder.Services.AddSingleton<IBlogLikeService, BlogLikeService>();
 
-            //Mapping services
+            //Utility services
+            //Mapping utils
             builder.Services.AddSingleton<IUserMapper, UserMapper>();
             builder.Services.AddSingleton<IBlogMapper, BlogMapper>();
             builder.Services.AddSingleton<IXResultServiceMapper, XResultServiceMapper>();
             builder.Services.AddSingleton<IResponseMapper, ResponseMapper>();
+
+            //Jwt utils (Authentication)
+            builder.Services.AddTransient<IAuthUtils, AuthUtils>();
 
             //Validations
             builder.Services.AddSingleton<IUserValidation, UserValidation>();
