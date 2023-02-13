@@ -1,11 +1,13 @@
 ﻿using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
+using BloggingApplication.Models.Dtos;
 using Boolean = BlogApp.Models.Response.Boolean;
 
 namespace BlogApp.Utilities.MappingUtils
 {
     public interface IResponseMapper : IMapper<Exception, ApiResponse<Message>>,
                                        IMapper<UserInfoDto, ApiResponse<UserInfoDto>>,
+                                       IMapper<AuthUserInfoDto, ApiResponse<AuthUserInfoDto>>,
                                        IMapper<Message, ApiResponse<Message>>,
                                        IMapper<ServiceResult, ApiResponse<List<Message>>>,
                                        IMapper<Boolean, ApiResponse<Boolean>>,

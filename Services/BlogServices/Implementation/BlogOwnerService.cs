@@ -11,18 +11,18 @@ namespace BlogApp.Services.BlogServices.Implementation
     public class BlogOwnerService : IBlogOwnerService
     {
         private IBlogOwnersStore<BlogOwner> _blogOwnerStore;
-        private IUserCrudService _userCrudService;
+        private IMyUserStore _userStore;
         private IUserMapper _userMapper;
         private IBlogMapper _blogMapper;
         private IBlogStore<Blog> _blogStore;
         public BlogOwnerService(IBlogOwnersStore<BlogOwner> blogOwnerStore,
-                                IUserCrudService userCrudService,
+                                IMyUserStore userStore,
                                 IUserMapper userMapper,
                                 IBlogMapper blogMapper,
                                 IBlogStore<Blog> blogStore)
         {
             _blogOwnerStore = blogOwnerStore;
-            _userCrudService = userCrudService;
+            _userStore = userStore;
             _userMapper = userMapper;
             _blogMapper = blogMapper;
             _blogStore = blogStore;
@@ -34,7 +34,7 @@ namespace BlogApp.Services.BlogServices.Implementation
 
             IEnumerable<ApplicationUser> users = new List<ApplicationUser>();
             foreach (int id in ids)
-                users.Append(await _userCrudService.FindById(id.ToString()));
+                users.Append(await _userStore.FindByIdAsync(id.ToString(), CancellationToken.None));
 
             IEnumerable<UserInfoDto> result = new List<UserInfoDto>();
             foreach (ApplicationUser user in users)
@@ -45,7 +45,7 @@ namespace BlogApp.Services.BlogServices.Implementation
 
         public async Task<ServiceResult> Assign(int blogId, int userId)
         {
-            ApplicationUser user = await _userCrudService.FindById(userId.ToString());
+            ApplicationUser user = await _userStore.FindByIdAsync(userId.ToString(), CancellationToken.None);
             if (user == null)
                 return ServiceResult.Failed(new Message { Code = "Error", Description = "User not found." });
 
@@ -72,7 +72,7 @@ namespace BlogApp.Services.BlogServices.Implementation
 
         public async Task<ServiceResult> Revoke(int blogId, int userId)
         {
-            ApplicationUser user = await _userCrudService.FindById(userId.ToString());
+            ApplicationUser user = await _userStore.FindByIdAsync(userId.ToString(), CancellationToken.None);
             if (user == null)
                 return ServiceResult.Failed(new Message { Code = "Error", Description = "User not found." });
 

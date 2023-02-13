@@ -30,11 +30,10 @@ namespace BlogApp.Controllers
         [Route("{userId}")]
         public async Task<ActionResult<ApiResponse<UserInfoDto>>> GetById(string userId)
         {
-            ApplicationUser user = await _userCrudService.FindById(userId);
-            if (user == null)
+            UserInfoDto user = await _userCrudService.FindById(userId);
+            if (user != null)
             {
-                UserInfoDto userDto = _userMapper.Map(user);
-                return Ok(_responseMapper.Map(userDto));
+                return Ok(_responseMapper.Map(user));
             }
             else
             {
@@ -47,11 +46,10 @@ namespace BlogApp.Controllers
         [Route("{email}")]
         public async Task<ActionResult<ApiResponse<UserInfoDto>>> GetByEmail(string email)
         {
-            ApplicationUser user = await _userCrudService.FindByEmail(email);
-            if (user == null)
+            UserInfoDto user = await _userCrudService.FindByEmail(email);
+            if (user != null)
             {
-                UserInfoDto userDto = _userMapper.Map(user);
-                return Ok(_responseMapper.Map(userDto));
+                return Ok(_responseMapper.Map(user));
             }
             else
             {
@@ -64,24 +62,18 @@ namespace BlogApp.Controllers
         [Route("Create")]
         public async Task<ActionResult<ApiResponse<UserInfoDto>>> Create(RegisterUserDto dto)
         {
-            ApplicationUser user = await _userCrudService.FindByEmail(dto.Email);
+            UserInfoDto user = await _userCrudService.FindByEmail(dto.Email);
 
             //Chech user exists or not
             if (user != null)
                 return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "Email already taken." }));
 
-            using (var tr = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            {
-                //Create user
-                user = await _userCrudService.CreateUser(dto);
-                if (user == null)
-                    return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "User creation failed." }));
+            //Create user
+            user = await _userCrudService.CreateUser(dto);
+            if (user == null)
+                return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "User creation failed." }));
 
-                tr.Complete();
-            }
-
-            UserInfoDto userDto = _userMapper.Map(user);
-            return StatusCode(201, _responseMapper.Map(userDto));
+            return StatusCode(201, _responseMapper.Map(user));
         }
 
         [HttpPut]

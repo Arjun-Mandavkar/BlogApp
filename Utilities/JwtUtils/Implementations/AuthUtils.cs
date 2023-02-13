@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using BlogApp.Models;
+using BlogApp.Models.Dtos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -16,7 +17,7 @@ namespace BlogApp.Utilities.JwtUtils.Implementations
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task<string> GenerateToken(ApplicationUser user)
+        public async Task<string> GenerateToken(UserInfoDto user)
         {
             //Generate the token
 

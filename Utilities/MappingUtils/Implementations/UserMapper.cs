@@ -13,7 +13,7 @@ namespace BlogApp.Utilities.MappingUtils.Implementations
             Role = user.Role.ToString(),
             Name = user.Name
         };
-        public AuthUserInfoDto Map(ApplicationUser user, string token) => new AuthUserInfoDto
+        public AuthUserInfoDto Map(UserInfoDto user, string token) => new AuthUserInfoDto
         {
             Email = user.Email,
             Id = user.Id,

@@ -23,7 +23,7 @@ namespace BlogApp.Services.UserServices.Implementations
             _resultMapper = identityServiceMapper;
             _hasher = hasher;
         }
-        public async Task<ApplicationUser> CreateUser(RegisterUserDto dto)
+        public async Task<UserInfoDto> CreateUser(RegisterUserDto dto)
         {
             string passwordHash = _hasher.HashPassword(new ApplicationUser(), dto.Password);
             IdentityResult result = await _userStore.CreateAsync(_userMapper.Map(dto, passwordHash), CancellationToken.None);
@@ -41,14 +41,16 @@ namespace BlogApp.Services.UserServices.Implementations
             return _resultMapper.Map(res);
         }
 
-        public async Task<ApplicationUser> FindByEmail(string email)
+        public async Task<UserInfoDto> FindByEmail(string email)
         {
-            return await _userStore.FindByNameAsync(email, CancellationToken.None);
+            ApplicationUser user = await _userStore.FindByNameAsync(email, CancellationToken.None);
+            return user != null? _userMapper.Map(user): null;
         }
 
-        public async Task<ApplicationUser> FindById(string userId)
+        public async Task<UserInfoDto> FindById(string userId)
         {
-            return await _userStore.FindByIdAsync(userId, CancellationToken.None);
+            ApplicationUser user = await _userStore.FindByIdAsync(userId, CancellationToken.None);
+            return user != null ? _userMapper.Map(user) : null;
         }
 
         public async Task<ServiceResult> SoftDeleteUser(string email)

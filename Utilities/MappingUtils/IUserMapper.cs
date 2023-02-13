@@ -6,7 +6,7 @@ namespace BlogApp.Utilities.MappingUtils
 {
     public interface IUserMapper : IMapper<ApplicationUser, UserInfoDto>
     {
-        public AuthUserInfoDto Map(ApplicationUser user, string token);
+        public AuthUserInfoDto Map(UserInfoDto user, string token);
         public ApplicationUser Map(RegisterUserDto user, string passwordHash);
         public RegisterUserDto MapExt(ApplicationUser user);
     }

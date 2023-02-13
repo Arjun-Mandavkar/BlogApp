@@ -1,5 +1,6 @@
 ﻿using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
+using BloggingApplication.Models.Dtos;
 using Boolean = BlogApp.Models.Response.Boolean;
 
 namespace BlogApp.Utilities.MappingUtils.Implementations
@@ -89,6 +90,12 @@ namespace BlogApp.Utilities.MappingUtils.Implementations
         {
             IsSuccess = true,
             Data = source
+        };
+
+        public ApiResponse<AuthUserInfoDto> Map(AuthUserInfoDto user) => new ApiResponse<AuthUserInfoDto>
+        {
+            IsSuccess = true,
+            Data = user
         };
     }
 }

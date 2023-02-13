@@ -2,7 +2,6 @@
 using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
 using BlogApp.Repositories;
-using BlogApp.Services.UserServices;
 using BlogApp.Utilities.MappingUtils;
 using Microsoft.AspNetCore.Identity;
 
@@ -11,16 +10,16 @@ namespace BlogApp.Services.BlogServices.Implementation
     public class BlogEditorService : IBlogEditorService
     {
         private IBlogEditorsStore<Blog, ApplicationUser> _blogEditorStore;
-        private IUserCrudService _userCrudService;
+        private IMyUserStore _userStore;
         private IUserMapper _userMapper;
         private IBlogStore<Blog> _blogStore;
         public BlogEditorService(IBlogEditorsStore<Blog, ApplicationUser> blogEditorStore,
-                                 IUserCrudService userCrudService,
+                                 IMyUserStore userStore,
                                  IUserMapper userMapper,
                                  IBlogStore<Blog> blogStore)
         {
             _blogEditorStore = blogEditorStore;
-            _userCrudService = userCrudService;
+            _userStore = userStore;
             _userMapper = userMapper;
             _blogStore = blogStore;
         }
@@ -31,18 +30,22 @@ namespace BlogApp.Services.BlogServices.Implementation
 
             IEnumerable<ApplicationUser> users = new List<ApplicationUser>();
             foreach (int id in ids)
-                users.Append(await _userCrudService.FindById(id.ToString()));
+            {
+                users.Append(await _userStore.FindByIdAsync(id.ToString(), CancellationToken.None));
+            }
 
             IEnumerable<UserInfoDto> result = new List<UserInfoDto>();
-            foreach (ApplicationUser user in users)
+            foreach(ApplicationUser user in users)
+            {
                 result.Append(_userMapper.Map(user));
-
+            }
+            
             return result;
         }
 
         public async Task<ServiceResult> Assign(int blogId, int userId)
         {
-            ApplicationUser user = await _userCrudService.FindById(userId.ToString());
+            ApplicationUser user = await _userStore.FindByIdAsync(userId.ToString(), CancellationToken.None);
             if (user == null)
                 return ServiceResult.Failed(new Message { Code = "Error", Description = "User not found." });
 
@@ -68,7 +71,7 @@ namespace BlogApp.Services.BlogServices.Implementation
 
         public async Task<ServiceResult> Revoke(int blogId, int userId)
         {
-            ApplicationUser user = await _userCrudService.FindById(userId.ToString());
+            ApplicationUser user = await _userStore.FindByIdAsync(userId.ToString(), CancellationToken.None);
             if (user == null)
                 return ServiceResult.Failed(new Message { Code = "Error", Description = "User not found." });
 
