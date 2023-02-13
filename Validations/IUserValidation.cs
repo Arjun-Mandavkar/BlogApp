@@ -6,7 +6,7 @@ namespace BlogApp.Validations
     {
         public Task<bool> ValidateEmail(string email);
 
-        public Task<bool> ValidatePassword(ApplicationUser user, string password);
+        public Task<bool> ValidatePassword(string passwordHash, string password);
 
         public Task<bool> ValidateAdminUser(ApplicationUser user);
     }

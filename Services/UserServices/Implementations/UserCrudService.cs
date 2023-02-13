@@ -1,6 +1,7 @@
 ﻿using BlogApp.Models;
 using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
+using BlogApp.Models.ServiceObjects;
 using BlogApp.Repositories;
 using BlogApp.Utilities.MappingUtils;
 using Microsoft.AspNetCore.Identity;
@@ -13,17 +14,20 @@ namespace BlogApp.Services.UserServices.Implementations
         private IUserMapper _userMapper;
         private IXResultServiceMapper _resultMapper;
         private PasswordHasher<ApplicationUser> _hasher;
+        private IServiceObjectMapper _serviceObjectMapper;
         public UserCrudService(IMyUserStore userStore,
                                IUserMapper userMapper,
                                IXResultServiceMapper identityServiceMapper,
-                               PasswordHasher<ApplicationUser> hasher)
+                               PasswordHasher<ApplicationUser> hasher,
+                               IServiceObjectMapper serviceObjectMapper)
         {
             _userStore = userStore;
             _userMapper = userMapper;
             _resultMapper = identityServiceMapper;
             _hasher = hasher;
+            _serviceObjectMapper = serviceObjectMapper;
         }
-        public async Task<UserInfoDto> CreateUser(RegisterUserDto dto)
+        public async Task<UserServiceObject> CreateUser(RegisterUserDto dto)
         {
             string passwordHash = _hasher.HashPassword(new ApplicationUser(), dto.Password);
             IdentityResult result = await _userStore.CreateAsync(_userMapper.Map(dto, passwordHash), CancellationToken.None);
@@ -41,16 +45,16 @@ namespace BlogApp.Services.UserServices.Implementations
             return _resultMapper.Map(res);
         }
 
-        public async Task<UserInfoDto> FindByEmail(string email)
+        public async Task<UserServiceObject> FindByEmail(string email)
         {
             ApplicationUser user = await _userStore.FindByNameAsync(email, CancellationToken.None);
-            return user != null? _userMapper.Map(user): null;
+            return user != null? _serviceObjectMapper.Map(user): null;
         }
 
-        public async Task<UserInfoDto> FindById(string userId)
+        public async Task<UserServiceObject> FindById(string userId)
         {
             ApplicationUser user = await _userStore.FindByIdAsync(userId, CancellationToken.None);
-            return user != null ? _userMapper.Map(user) : null;
+            return user != null ? _serviceObjectMapper.Map(user) : null;
         }
 
         public async Task<ServiceResult> SoftDeleteUser(string email)

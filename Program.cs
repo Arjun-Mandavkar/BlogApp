@@ -75,6 +75,7 @@ namespace BlogApp
             builder.Services.AddSingleton<IBlogMapper, BlogMapper>();
             builder.Services.AddSingleton<IXResultServiceMapper, XResultServiceMapper>();
             builder.Services.AddSingleton<IResponseMapper, ResponseMapper>();
+            builder.Services.AddSingleton<IServiceObjectMapper, ServiceObjectMapper>();
 
             //Jwt utils (Authentication)
             builder.Services.AddTransient<IAuthUtils, AuthUtils>();
