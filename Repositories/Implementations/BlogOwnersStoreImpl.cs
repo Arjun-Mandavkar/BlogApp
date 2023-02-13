@@ -1,8 +1,6 @@
 ﻿using BlogApp.DbConnection;
 using BlogApp.Models;
-using BlogApp.Models.Dtos;
 using Dapper;
-using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Identity;
 
 namespace BlogApp.Repositories.Implementations

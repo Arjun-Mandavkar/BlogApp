@@ -2,7 +2,6 @@
 using BlogApp.Models;
 using Dapper;
 using Microsoft.AspNetCore.Identity;
-using System.Threading;
 
 namespace BlogApp.Repositories.Implementations
 {

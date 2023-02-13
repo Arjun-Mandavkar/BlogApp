@@ -5,7 +5,7 @@ namespace BlogApp.Models
 {
     public class ApplicationUser : IdentityUser<int>
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = String.Empty;
         public RoleEnum Role { get; set; }
     }
 }

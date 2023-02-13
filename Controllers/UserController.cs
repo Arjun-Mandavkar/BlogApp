@@ -1,13 +1,10 @@
-﻿using BlogApp.Models;
-using BlogApp.Models.Dtos;
+﻿using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
-using BlogApp.Services.BlogServices;
 using BlogApp.Services.UserServices;
 using BlogApp.Utilities.MappingUtils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Transactions;
 
 namespace BlogApp.Controllers
 {
@@ -17,13 +14,12 @@ namespace BlogApp.Controllers
     public class UserController : ControllerBase
     {
         private IUserCrudService _userCrudService { get; }
-        private IUserMapper _userMapper { get; }
         private IResponseMapper _responseMapper { get; }
 
-        public UserController(IUserCrudService userCrudService, IUserMapper userMapper)
+        public UserController(IUserCrudService userCrudService, IResponseMapper responseMapper)
         {
             _userCrudService = userCrudService;
-            _userMapper = userMapper;
+            _responseMapper = responseMapper;
         }
 
         [HttpGet]

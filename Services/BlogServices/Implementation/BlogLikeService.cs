@@ -2,7 +2,6 @@
 using BlogApp.Models;
 using BlogApp.Models.Response;
 using BlogApp.Repositories;
-using BlogApp.Services.UserServices;
 using BlogApp.Utilities.JwtUtils;
 using Microsoft.AspNetCore.Identity;
 

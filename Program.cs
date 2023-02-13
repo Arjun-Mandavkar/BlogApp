@@ -88,7 +88,6 @@ namespace BlogApp
             builder.Services.AddTransient<IUserStore<ApplicationUser>, UserStoreImpl>();
             builder.Services.AddTransient<IRoleStore<IdentityRole>, RoleStoreImpl>();
             builder.Services.AddTransient<IMyUserStore, UserStoreImpl>();
-            builder.Services.AddTransient<IUserRolesStore<IdentityRole, ApplicationUser>, UserRolesStoreImpl>();
             builder.Services.AddTransient<IBlogStore<Blog>, BlogStoreImpl>();
             builder.Services.AddTransient<IBlogLikesStore<Blog, ApplicationUser>, BlogLikesStoreImpl>();
             builder.Services.AddTransient<IBlogCommentsStore<BlogComment>, BlogCommentsStoreImpl>();

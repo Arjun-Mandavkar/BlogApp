@@ -8,6 +8,7 @@ namespace BlogApp.Repositories.Implementations
     public class BlogEditorsStoreImpl : IBlogEditorsStore<Blog, ApplicationUser>
     {
         private IDbConnectionFactory _connectionFactory { get; }
+
         public BlogEditorsStoreImpl(IDbConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory;

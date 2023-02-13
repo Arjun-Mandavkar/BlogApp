@@ -1,6 +1,6 @@
-﻿using BlogApp.Utilities.MappingUtils;
+﻿using System.Net;
+using BlogApp.Utilities.MappingUtils;
 using Microsoft.Data.SqlClient;
-using System.Net;
 
 namespace BlogApp.Services
 {

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace BlogApp.Models
+﻿namespace BlogApp.Models
 {
     public class UserRole
     {

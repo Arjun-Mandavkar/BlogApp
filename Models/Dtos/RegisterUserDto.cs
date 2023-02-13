@@ -1,18 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BlogApp.Models.Dtos
+﻿namespace BlogApp.Models.Dtos
 {
     public class RegisterUserDto
     {
-        [Required]
-        public string Name { get; set; }
-        [Required]
-        public string Email { get; set; }
-        [Required]
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public RoleEnum Role { get; set; }
-        [Required]
-        public string Password { get; set; }
-        [Required]
-        public string ConfirmPassword { get; set; }
+        public string Password { get; set; } = string.Empty;
+        public string ConfirmPassword { get; set; } = string.Empty;
     }
 }

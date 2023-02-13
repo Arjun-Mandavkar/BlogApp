@@ -8,6 +8,7 @@ namespace BlogApp.Repositories.Implementations
     public class BlogCommentsStoreImpl : IBlogCommentsStore<BlogComment>
     {
         private IDbConnectionFactory _connectionFactory { get; }
+
         public BlogCommentsStoreImpl(IDbConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory;

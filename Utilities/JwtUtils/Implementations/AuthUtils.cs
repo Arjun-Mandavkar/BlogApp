@@ -1,9 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using BlogApp.Models;
 using BlogApp.Models.Dtos;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BlogApp.Utilities.JwtUtils.Implementations
@@ -12,11 +10,13 @@ namespace BlogApp.Utilities.JwtUtils.Implementations
     {
         private readonly IConfiguration _configuration;
         private IHttpContextAccessor _httpContextAccessor;
+
         public AuthUtils(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
         }
+
         public async Task<string> GenerateToken(UserInfoDto user)
         {
             //Generate the token

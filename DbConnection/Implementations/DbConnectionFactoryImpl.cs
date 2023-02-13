@@ -1,5 +1,4 @@
-﻿using BlogApp.DbConnection;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 
 namespace BlogApp.DbConnection.Implementations
 {

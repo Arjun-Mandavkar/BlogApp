@@ -1,6 +1,5 @@
 ﻿using BlogApp.Models;
 using BlogApp.Models.Dtos;
-using BlogApp.Services.UserServices;
 using Microsoft.AspNetCore.Identity;
 
 namespace BlogApp.Validations.Implementations

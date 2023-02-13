@@ -1,13 +1,10 @@
-﻿using BlogApp.Models;
-using BlogApp.Models.Dtos;
+﻿using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
 using BlogApp.Services.UserServices;
 using BlogApp.Utilities.JwtUtils;
 using BlogApp.Utilities.MappingUtils;
-using BlogApp.Validations;
 using BloggingApplication.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
-using System.Transactions;
 
 namespace BlogApp.Controllers
 {

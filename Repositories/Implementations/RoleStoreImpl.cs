@@ -1,5 +1,4 @@
 ﻿using BlogApp.DbConnection;
-using BlogApp.Models;
 using Dapper;
 using Microsoft.AspNetCore.Identity;
 

@@ -1,8 +1,7 @@
-﻿using BlogApp.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using BlogApp.DbConnection;
+using BlogApp.Models;
 using Dapper;
-using BlogApp.DbConnection;
-using System.Threading;
+using Microsoft.AspNetCore.Identity;
 
 namespace BlogApp.Repositories.Implementations
 {

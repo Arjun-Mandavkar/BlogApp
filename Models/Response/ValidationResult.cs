@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace BlogApp.Models.Response
+﻿namespace BlogApp.Models.Response
 {
     public class ValidationResult
     {

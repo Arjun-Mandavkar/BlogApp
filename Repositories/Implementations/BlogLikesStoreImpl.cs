@@ -2,14 +2,13 @@
 using BlogApp.Models;
 using Dapper;
 using Microsoft.AspNetCore.Identity;
-using System.Runtime.InteropServices;
-using System.Threading;
 
 namespace BlogApp.Repositories.Implementations
 {
     public class BlogLikesStoreImpl : IBlogLikesStore<Blog, ApplicationUser>
     {
         private IDbConnectionFactory _connectionFactory { get; }
+
         public BlogLikesStoreImpl(IDbConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory;
