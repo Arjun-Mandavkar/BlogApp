@@ -1,6 +1,6 @@
 ﻿using BlogApp.Models;
-using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
+using BlogApp.Models.ServiceObjects;
 using BlogApp.Repositories;
 using BlogApp.Utilities.MappingUtils;
 using Microsoft.AspNetCore.Identity;
@@ -11,20 +11,20 @@ namespace BlogApp.Services.BlogServices.Implementation
     {
         private IBlogEditorsStore<Blog, ApplicationUser> _blogEditorStore;
         private IMyUserStore _userStore;
-        private IUserMapper _userMapper;
         private IBlogStore<Blog> _blogStore;
+        private IServiceObjectMapper _serviceObjectMapper;
         public BlogEditorService(IBlogEditorsStore<Blog, ApplicationUser> blogEditorStore,
                                  IMyUserStore userStore,
-                                 IUserMapper userMapper,
-                                 IBlogStore<Blog> blogStore)
+                                 IBlogStore<Blog> blogStore,
+                                 IServiceObjectMapper serviceObjectMapper)
         {
             _blogEditorStore = blogEditorStore;
             _userStore = userStore;
-            _userMapper = userMapper;
             _blogStore = blogStore;
+            _serviceObjectMapper = serviceObjectMapper;
         }
 
-        public async Task<IEnumerable<UserInfoDto>> GetAll(int blogId)
+        public async Task<IEnumerable<UserServiceObject>> GetAll(int blogId)
         {
             IEnumerable<int> ids = await _blogEditorStore.Get(blogId);
 
@@ -34,10 +34,10 @@ namespace BlogApp.Services.BlogServices.Implementation
                 users.Append(await _userStore.FindByIdAsync(id.ToString(), CancellationToken.None));
             }
 
-            IEnumerable<UserInfoDto> result = new List<UserInfoDto>();
+            IEnumerable<UserServiceObject> result = new List<UserServiceObject>();
             foreach(ApplicationUser user in users)
             {
-                result.Append(_userMapper.Map(user));
+                result.Append(_serviceObjectMapper.Map(user));
             }
             
             return result;

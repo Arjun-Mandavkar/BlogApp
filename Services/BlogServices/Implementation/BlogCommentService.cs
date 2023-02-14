@@ -1,6 +1,7 @@
 ﻿using BlogApp.Models;
 using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
+using BlogApp.Models.ServiceObjects;
 using BlogApp.Repositories;
 using BlogApp.Utilities.JwtUtils;
 using BlogApp.Utilities.MappingUtils;
@@ -20,6 +21,7 @@ namespace BlogApp.Services.BlogServices.Implementation
         private IBlogRoleValidation _blogRoleValidation;
         private IAuthUtils _authUtils;
         private IUserStore<ApplicationUser> _userStore;
+        private IServiceObjectMapper _serviceObjectMapper;
         public BlogCommentService(IBlogStore<Blog> blogStore,
                                   IBlogCommentsStore<BlogComment> blogCommentStore,
                                   IBlogValidation blogValidation,
@@ -28,7 +30,8 @@ namespace BlogApp.Services.BlogServices.Implementation
                                   IUserValidation userValidation,
                                   IBlogRoleValidation blogRoleValidation,
                                   IAuthUtils authUtils,
-                                  IUserStore<ApplicationUser> userStore)
+                                  IUserStore<ApplicationUser> userStore,
+                                  IServiceObjectMapper serviceObjectMapper)
         {
             _blogStore = blogStore;
             _blogCommentStore = blogCommentStore;
@@ -39,6 +42,7 @@ namespace BlogApp.Services.BlogServices.Implementation
             _blogRoleValidation = blogRoleValidation;
             _authUtils = authUtils;
             _userStore = userStore;
+            _serviceObjectMapper = serviceObjectMapper;
         }
 
         public async Task<ServiceResult> CommentOnBlog(BlogCommentDto comment)
@@ -127,13 +131,13 @@ namespace BlogApp.Services.BlogServices.Implementation
             return ServiceResult.Success(new Message { Code = "Message", Description = "Comment updated successfully." });
         }
 
-        public async Task<IEnumerable<BlogCommentDto>> GetAllCommentsOfBlog(int blogId)
+        public async Task<IEnumerable<BlogCommentServiceObject>> GetAllCommentsOfBlog(int blogId)
         {
             IEnumerable<BlogComment> comments = await _blogCommentStore.GetAllFromBlogAsync(blogId);
-            IEnumerable<BlogCommentDto> result = new List<BlogCommentDto>();
+            IEnumerable<BlogCommentServiceObject> result = new List<BlogCommentServiceObject>();
 
             foreach (BlogComment comment in comments)
-                result.Append(_blogMapper.Map(comment));
+                result.Append(_serviceObjectMapper.Map(comment));
 
             return result;
         }
