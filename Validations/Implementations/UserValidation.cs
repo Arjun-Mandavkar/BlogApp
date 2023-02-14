@@ -25,9 +25,9 @@ namespace BlogApp.Validations.Implementations
             return user != null;
         }
 
-        public async Task<bool> ValidatePassword(ApplicationUser user, string password)
+        public async Task<bool> ValidatePassword(string passwordHash, string password)
         {
-            var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, password);
+            var result = _hasher.VerifyHashedPassword(null, passwordHash, password);
             return result == PasswordVerificationResult.Success;
         }
     }

@@ -17,18 +17,9 @@ namespace BlogApp.Utilities.JwtUtils.Implementations
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<string> GenerateToken(UserInfoDto user)
+        public async Task<string> GenerateToken(IEnumerable<Claim> myClaims)
         {
             //Generate the token
-
-            //Prepare list of claims
-            List<Claim> myClaims = new List<Claim>()
-                    {
-                        new Claim("Id", user.Id.ToString()),
-                        new Claim("Email", user.Email),
-                new Claim("Name", user.Name),
-                        new Claim(ClaimTypes.Role, user.Role.ToString())
-                    };
 
             //Generate security key
             string secret = _configuration.GetSection("Jwt:Secret").Value;

@@ -1,5 +1,6 @@
 ﻿using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
+using BlogApp.Models.ServiceObjects;
 
 namespace BlogApp.Services.BlogServices
 {
@@ -8,6 +9,6 @@ namespace BlogApp.Services.BlogServices
         public Task<ServiceResult> CommentOnBlog(BlogCommentDto comment);
         public Task<ServiceResult> DeleteComment(int commentId);
         public Task<ServiceResult> EditComment(BlogCommentDto comment);
-        public Task<IEnumerable<BlogCommentDto>> GetAllCommentsOfBlog(int blogId);
+        public Task<IEnumerable<BlogCommentServiceObject>> GetAllCommentsOfBlog(int blogId);
     }
 }

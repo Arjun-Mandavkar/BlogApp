@@ -11,24 +11,24 @@ namespace BlogApp.Utilities.MappingUtils
                                        IMapper<Message, ApiResponse<Message>>,
                                        IMapper<ServiceResult, ApiResponse<List<Message>>>,
                                        IMapper<Boolean, ApiResponse<Boolean>>,
-                                       IMapper<List<BlogCommentDto>, ApiResponse<List<BlogCommentDto>>>,
+                                       IMapper<IEnumerable<BlogCommentDto>, ApiResponse<IEnumerable<BlogCommentDto>>>,
                                        IMapper<BlogAuthorsDto, ApiResponse<BlogAuthorsDto>>,
                                        IMapper<BlogDto, ApiResponse<BlogDto>>,
-                                       IMapper<List<BlogDto>, ApiResponse<List<BlogDto>>>
+                                       IMapper<IEnumerable<BlogDto>, ApiResponse<IEnumerable<BlogDto>>>
     {
         /// <summary>
         /// Used only for returning 'ERROR' messages
         /// </summary>
         /// <param name="messages"></param>
         /// <returns>Information about failure</returns>
-        public ApiResponse<List<Message>> Map(params Message[] messages);
+        public ApiResponse<IEnumerable<Message>> Map(params Message[] messages);
 
         /// <summary>
         /// Used to convert exception to dev env api response
         /// </summary>
         /// <param name="exception"></param>
         /// <returns></returns>
-        public ApiResponse<List<Message>> MapDev(Exception exception);
+        public ApiResponse<IEnumerable<Message>> MapDev(Exception exception);
 
         /// <summary>
         /// Used for returning Success or Information message
@@ -42,6 +42,6 @@ namespace BlogApp.Utilities.MappingUtils
         /// </summary>
         /// <param name="messages"></param>
         /// <returns></returns>
-        public ApiResponse<List<Message>> MapMessages(params Message[] messages);
+        public ApiResponse<IEnumerable<Message>> MapMessages(params Message[] messages);
     }
 }

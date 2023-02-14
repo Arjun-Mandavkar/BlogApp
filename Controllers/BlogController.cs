@@ -1,5 +1,6 @@
 ﻿using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
+using BlogApp.Models.ServiceObjects;
 using BlogApp.Services.BlogServices;
 using BlogApp.Utilities.MappingUtils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,13 +22,15 @@ namespace BloggingApplication.Controllers
         private IBlogOwnerService _blogOwnerService;
         private IBlogEditorService _blogEditorService;
         private IBlogRolesService _blogRolesService;
+        private IServiceObjectMapper _serviceObjectMapper;
         public BlogController(IBlogCrudService blogCrudService,
                               IResponseMapper responseMapper,
                               IBlogLikeService blogLikeService,
                               IBlogCommentService blogCommentService,
                               IBlogOwnerService blogOwnerService,
                               IBlogEditorService blogEditorService,
-                              IBlogRolesService blogRolesService)
+                              IBlogRolesService blogRolesService,
+                              IServiceObjectMapper serviceObjectMapper)
         {
             _blogCrudService = blogCrudService;
             _responseMapper = responseMapper;
@@ -36,20 +39,29 @@ namespace BloggingApplication.Controllers
             _blogOwnerService = blogOwnerService;
             _blogEditorService = blogEditorService;
             _blogRolesService = blogRolesService;
+            _serviceObjectMapper = serviceObjectMapper;
         }
 
         /*--------------------- CRUD --------------------*/
         [HttpGet]
         public async Task<ActionResult<List<BlogDto>>> GetAll()
         {
-            IEnumerable<BlogDto> blogs = await _blogCrudService.GetAll();
-            return Ok(blogs);
+            IEnumerable<BlogServiceObject> blogs = await _blogCrudService.GetAll();
+            IEnumerable<BlogDto> result = new List<BlogDto>();
+
+            foreach (BlogServiceObject blog in blogs)
+            {
+                result.Append(_serviceObjectMapper.Map(blog));
+            }
+
+            return Ok(_responseMapper.Map(result));
         }
 
         [HttpGet("{blogId}")]
         public async Task<ActionResult<ApiResponse<BlogDto>>> Get(int blogId)
         {
-            BlogDto dto = await _blogCrudService.Get(blogId);
+            BlogServiceObject blog = await _blogCrudService.Get(blogId);
+            BlogDto dto = _serviceObjectMapper.Map(blog);
             return _responseMapper.Map(dto);
         }
 
@@ -121,10 +133,17 @@ namespace BloggingApplication.Controllers
         }
 
         [HttpGet("Comment/{blogId}")]
-        public async Task<ActionResult<ApiResponse<List<BlogCommentDto>>>> GetAllCommentsOfBlog(int blogId)
+        public async Task<ActionResult<ApiResponse<IEnumerable<BlogCommentDto>>>> GetAllCommentsOfBlog(int blogId)
         {
-            IEnumerable<BlogCommentDto> comments = await _blogCommentService.GetAllCommentsOfBlog(blogId);
-            return Ok(_responseMapper.Map(comments.ToList()));
+            IEnumerable<BlogCommentServiceObject> comments = await _blogCommentService.GetAllCommentsOfBlog(blogId);
+            IEnumerable<BlogCommentDto> result = new List<BlogCommentDto>();
+
+            foreach (BlogCommentServiceObject comment in comments)
+            {
+                result.Append(_serviceObjectMapper.Map(comment));
+            }
+
+            return Ok(_responseMapper.Map(result));
         }
 
         /*---------------------- Assign Role ----------------------*/
@@ -133,8 +152,20 @@ namespace BloggingApplication.Controllers
         public async Task<ActionResult<ApiResponse<BlogAuthorsDto>>> GetAuthors(int blogId)
         {
             BlogAuthorsDto result = new BlogAuthorsDto();
-            result.Editors = await _blogEditorService.GetAll(blogId);
-            result.Owners = await _blogOwnerService.GetAll(blogId);
+            IEnumerable<UserServiceObject> editors = await _blogEditorService.GetAll(blogId);
+            IEnumerable<UserServiceObject> owners = await _blogOwnerService.GetAll(blogId);
+
+            result.Editors = new List<UserInfoDto>();
+            foreach (UserServiceObject user in editors)
+            {
+                result.Editors.Append(_serviceObjectMapper.Map(user));
+            }
+             
+            result.Owners = new List<UserInfoDto>();
+            foreach (UserServiceObject user in owners)
+            {
+                result.Owners.Append(_serviceObjectMapper.Map(user));
+            }
 
             return Ok(_responseMapper.Map(result));
         }

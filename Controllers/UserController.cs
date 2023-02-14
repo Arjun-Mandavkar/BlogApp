@@ -1,5 +1,6 @@
 ﻿using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
+using BlogApp.Models.ServiceObjects;
 using BlogApp.Services.UserServices;
 using BlogApp.Utilities.MappingUtils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,21 +16,26 @@ namespace BlogApp.Controllers
     {
         private IUserCrudService _userCrudService { get; }
         private IResponseMapper _responseMapper { get; }
+        private IServiceObjectMapper _serviceObjectMapper { get; }
 
-        public UserController(IUserCrudService userCrudService, IResponseMapper responseMapper)
+        public UserController(IUserCrudService userCrudService,
+                              IResponseMapper responseMapper,
+                              IServiceObjectMapper serviceObjectMapper)
         {
             _userCrudService = userCrudService;
             _responseMapper = responseMapper;
+            _serviceObjectMapper = serviceObjectMapper;
         }
 
         [HttpGet]
         [Route("{userId}")]
         public async Task<ActionResult<ApiResponse<UserInfoDto>>> GetById(string userId)
         {
-            UserInfoDto user = await _userCrudService.FindById(userId);
+            UserServiceObject user = await _userCrudService.FindById(userId);
             if (user != null)
             {
-                return Ok(_responseMapper.Map(user));
+                UserInfoDto dto = _serviceObjectMapper.Map(user);
+                return Ok(_responseMapper.Map(dto));
             }
             else
             {
@@ -42,10 +48,11 @@ namespace BlogApp.Controllers
         [Route("{email}")]
         public async Task<ActionResult<ApiResponse<UserInfoDto>>> GetByEmail(string email)
         {
-            UserInfoDto user = await _userCrudService.FindByEmail(email);
+            UserServiceObject user = await _userCrudService.FindByEmail(email);
             if (user != null)
             {
-                return Ok(_responseMapper.Map(user));
+                UserInfoDto dto = _serviceObjectMapper.Map(user);
+                return Ok(_responseMapper.Map(dto));
             }
             else
             {
@@ -58,7 +65,7 @@ namespace BlogApp.Controllers
         [Route("Create")]
         public async Task<ActionResult<ApiResponse<UserInfoDto>>> Create(RegisterUserDto dto)
         {
-            UserInfoDto user = await _userCrudService.FindByEmail(dto.Email);
+            UserServiceObject user = await _userCrudService.FindByEmail(dto.Email);
 
             //Chech user exists or not
             if (user != null)
@@ -69,7 +76,9 @@ namespace BlogApp.Controllers
             if (user == null)
                 return BadRequest(_responseMapper.Map(new Message { Code = "Error", Description = "User creation failed." }));
 
-            return StatusCode(201, _responseMapper.Map(user));
+            UserInfoDto userDto = _serviceObjectMapper.Map(user);
+
+            return StatusCode(201, _responseMapper.Map(userDto));
         }
 
         [HttpPut]
