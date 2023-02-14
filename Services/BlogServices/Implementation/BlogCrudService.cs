@@ -1,6 +1,7 @@
 ﻿using BlogApp.Models;
 using BlogApp.Models.Dtos;
 using BlogApp.Models.Response;
+using BlogApp.Models.ServiceObjects;
 using BlogApp.Repositories;
 using BlogApp.Services.UserServices;
 using BlogApp.Utilities.JwtUtils;
@@ -20,6 +21,8 @@ namespace BlogApp.Services.BlogServices.Implementation
         private IXResultServiceMapper _resultMapper;
         private IAuthUtils _authUtils;
         private IUserStore<ApplicationUser> _userStore;
+        private IServiceObjectMapper _serviceObjectMapper;
+
         public BlogCrudService(IBlogStore<Blog> blogStore,
                                IBlogValidation blogValidation,
                                IBlogRoleValidation blogRoleValidation,
@@ -27,7 +30,8 @@ namespace BlogApp.Services.BlogServices.Implementation
                                IBlogMapper blogMapper,
                                IXResultServiceMapper resultMapper,
                                IAuthUtils authUtils,
-                               IUserStore<ApplicationUser> userStore)
+                               IUserStore<ApplicationUser> userStore,
+                               IServiceObjectMapper serviceObjectMapper)
         {
             _blogStore = blogStore;
             _blogValidation = blogValidation;
@@ -37,6 +41,7 @@ namespace BlogApp.Services.BlogServices.Implementation
             _resultMapper = resultMapper;
             _authUtils = authUtils;
             _userStore = userStore;
+            _serviceObjectMapper = serviceObjectMapper;
         }
 
         public async Task<ServiceResult> Create(BlogDto blog)
@@ -83,20 +88,20 @@ namespace BlogApp.Services.BlogServices.Implementation
             return ServiceResult.Success(new Message { Code = "Message", Description = "Blog deleted successfully." });
         }
 
-        public async Task<BlogDto> Get(int blogId)
+        public async Task<BlogServiceObject> Get(int blogId)
         {
             Blog blog = await _blogStore.GetByIdAsync(blogId);
-            BlogDto dto = _blogMapper.Map(blog);
+            BlogServiceObject dto = _serviceObjectMapper.Map(blog);
             return dto;
         }
 
-        public async Task<IEnumerable<BlogDto>> GetAll()
+        public async Task<IEnumerable<BlogServiceObject>> GetAll()
         {
             IEnumerable<Blog> blogs = await _blogStore.GetAllAsync();
-            IEnumerable<BlogDto> dtos = new List<BlogDto>();
+            IEnumerable<BlogServiceObject> dtos = new List<BlogServiceObject>();
             foreach (Blog blog in blogs)
             {
-                dtos.Append(_blogMapper.Map(blog));
+                dtos.Append(_serviceObjectMapper.Map(blog));
             }
             return dtos;
         }

@@ -13,7 +13,7 @@ namespace BlogApp.Utilities.MappingUtils.Implementations
             Data = new Message { Code = "Error", Description = ex.Message }
         };
 
-        public ApiResponse<List<Message>> MapDev(Exception ex) => new ApiResponse<List<Message>>
+        public ApiResponse<IEnumerable<Message>> MapDev(Exception ex) => new ApiResponse<IEnumerable<Message>>
         {
             IsSuccess = false,
             Data = new List<Message> { new Message { Code = "Error", Description = ex.Message },
@@ -44,13 +44,13 @@ namespace BlogApp.Utilities.MappingUtils.Implementations
             Data = message
         };
 
-        public ApiResponse<List<Message>> Map(params Message[] messages) => new ApiResponse<List<Message>>
+        public ApiResponse<IEnumerable<Message>> Map(params Message[] messages) => new ApiResponse<IEnumerable<Message>>
         {
             IsSuccess = false,
             Data = messages.ToList()
         };
 
-        public ApiResponse<List<Message>> MapMessages(params Message[] messages) => new ApiResponse<List<Message>>
+        public ApiResponse<IEnumerable<Message>> MapMessages(params Message[] messages) => new ApiResponse<IEnumerable<Message>>
         {
             IsSuccess = true,
             Data = messages.ToList()
@@ -68,7 +68,7 @@ namespace BlogApp.Utilities.MappingUtils.Implementations
             Data = result
         };
 
-        public ApiResponse<List<BlogCommentDto>> Map(List<BlogCommentDto> comments) => new ApiResponse<List<BlogCommentDto>>
+        public ApiResponse<IEnumerable<BlogCommentDto>> Map(IEnumerable<BlogCommentDto> comments) => new ApiResponse<IEnumerable<BlogCommentDto>>
         {
             IsSuccess = true,
             Data = comments.ToList()
@@ -86,7 +86,7 @@ namespace BlogApp.Utilities.MappingUtils.Implementations
             Data = source
         };
 
-        public ApiResponse<List<BlogDto>> Map(List<BlogDto> source) => new ApiResponse<List<BlogDto>>
+        public ApiResponse<IEnumerable<BlogDto>> Map(IEnumerable<BlogDto> source) => new ApiResponse<IEnumerable<BlogDto>>
         {
             IsSuccess = true,
             Data = source
